@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSettings } from '../contexts/SettingsContext';
-import { X } from 'lucide-react';
+import { X, ToggleLeft, ToggleRight } from 'lucide-react';
 
 // Change the component props to accept an onClose function
 interface SettingsPageProps {
@@ -25,30 +25,31 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
           </button>
         </div>
         <div className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Render</h2>
-            <select
-              value={settings.render}
-              onChange={(e) => updateSettings({ render: e.target.value as 'latin' | 'sitelen_pona' })}
-              className="w-full p-2 border rounded"
-            >
-              <option value="latin">Latin/ASCII</option>
-              <option value="sitelen_pona">sitelen pona</option>
-            </select>
-          </div>
-
-          {settings.render === 'sitelen_pona' && (
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="useUCSUR"
-                checked={settings.useUCSUR}
-                onChange={(e) => updateSettings({ useUCSUR: e.target.checked })}
-                className="mr-2"
-              />
-              <label htmlFor="useUCSUR">Use UCSUR</label>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <span className="text-lg font-medium">latin</span>
+              <button
+                onClick={() => updateSettings({ render: settings.render === 'latin' ? 'sitelen_pona' : 'latin' })}
+                className="relative inline-flex items-center h-10 rounded-full w-20 bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <span className={`${settings.render === 'latin' ? 'translate-x-1' : 'translate-x-11'} inline-block w-8 h-8 transform bg-white rounded-full transition-transform`} />
+              </button>
+              <span className="text-lg font-medium">sitelen pona</span>
             </div>
-          )}
+            
+            {settings.render === 'sitelen_pona' && (
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="useUCSUR"
+                  checked={settings.useUCSUR}
+                  onChange={(e) => updateSettings({ useUCSUR: e.target.checked })}
+                  className="mr-2"
+                />
+                <label htmlFor="useUCSUR">Use UCSUR</label>
+              </div>
+            )}
+          </div>
 
           <div>
             <h2 className="text-xl font-semibold mb-2">Font</h2>

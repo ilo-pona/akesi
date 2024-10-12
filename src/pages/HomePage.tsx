@@ -7,7 +7,7 @@ import { config } from "../config";
 import { useLocation } from "react-router-dom";
 import { convertToUCSUR } from "../utils/ucsurConverter";
 
-const STORIES_PER_PAGE = 5;
+const STORIES_PER_PAGE = 4;
 const PAGES_TO_FETCH = 2;
 
 const HomePage: React.FC = () => {
@@ -119,7 +119,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">
-        {renderText("Latest Good News in Toki Pona", true)}
+        {renderText("ijo sin pa toki pona", true)}
       </h1>
       {loading ? (
         <p>{renderText("Loading stories...", true)}</p>
