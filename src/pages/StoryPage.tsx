@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { stories } from '../data/stories';
 import { useSettings } from '../contexts/SettingsContext';
 import WordHint from '../components/WordHint';
@@ -10,7 +10,7 @@ const StoryPage: React.FC = () => {
   const { settings } = useSettings();
 
   if (!story) {
-    return <div>Story not found</div>;
+    return <Navigate to="/" replace />;
   }
 
   const getFontClass = () => {
