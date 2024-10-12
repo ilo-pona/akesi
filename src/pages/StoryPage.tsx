@@ -1,13 +1,23 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { stories } from '../data/stories';
 import { useSettings } from '../contexts/SettingsContext';
+import { useStories } from '../contexts/StoriesContext';
 import WordHint from '../components/WordHint';
 
 const StoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const story = stories.find((s) => s.id === id);
+  const { state: { stories, loading, error } } = useStories();
   const { settings } = useSettings();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const story = stories.find((s) => s.id === id);
 
   if (!story) {
     return <Navigate to="/" replace />;

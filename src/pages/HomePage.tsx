@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import StoryCard from '../components/StoryCard';
-import { useSettings } from '../contexts/SettingsContext';
-import { Story } from '../types/Story'; // Assuming you have a Story type defined
-import { config } from '../config'; // Import the config file
+import React, { useState, useEffect } from "react";
+import StoryCard from "../components/StoryCard";
+import { useSettings } from "../contexts/SettingsContext";
+import { Story } from "../types/Story"; // Assuming you have a Story type defined
+import { config } from "../config";
 
 const STORIES_PER_PAGE = 5;
 
@@ -18,13 +18,13 @@ const HomePage: React.FC = () => {
       try {
         const response = await fetch(`${config.apiBaseUrl}/stories`); // Use the API base URL from config
         if (!response.ok) {
-          throw new Error('Failed to fetch stories');
+          throw new Error("Failed to fetch stories");
         }
         const data = await response.json();
         setStories(data);
         setLoading(false);
       } catch (err) {
-        setError('Error fetching stories. Please try again later.');
+        setError("Error fetching stories. Please try again later.");
         setLoading(false);
       }
     };
@@ -34,14 +34,14 @@ const HomePage: React.FC = () => {
 
   const getFontClass = () => {
     switch (settings.font) {
-      case 'nasin_nampa':
-        return 'font-nasin-nanpa';
-      case 'linja_pona':
-        return 'font-linja-pona';
-      case 'sitelen_pona_pona':
-        return 'font-sitelen-pona-pona';
+      case "nasin_nampa":
+        return "font-nasin-nanpa";
+      case "linja_pona":
+        return "font-linja-pona";
+      case "sitelen_pona_pona":
+        return "font-sitelen-pona-pona";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -70,19 +70,21 @@ const HomePage: React.FC = () => {
             ))}
           </div>
           <div className="flex justify-center space-x-2">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === pageNumber
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === pageNumber
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              )
+            )}
           </div>
         </>
       )}
