@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'nasin-nanpa';
+  src: url('https://cdn.jsdelivr.net/gh/jProgr/nasin-nanpa/nasin-nanpa.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'linja-pona';
+  src: url('https://cdn.jsdelivr.net/gh/jProgr/linja-pona/linja-pona.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'sitelen-pona-pona';
+  src: url('https://cdn.jsdelivr.net/gh/jackhumbert/sitelen-pona-pona/sitelen-pona-pona.woff2') format('woff2');
+}
+
+.font-nasin-nanpa {
+  font-family: 'nasin-nanpa', sans-serif;
+}
+
+.font-linja-pona {
+  font-family: 'linja-pona', sans-serif;
+}
+
+.font-sitelen-pona-pona {
+  font-family: 'sitelen-pona-pona', sans-serif;
+}
