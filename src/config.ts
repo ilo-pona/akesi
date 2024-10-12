@@ -1,9 +1,10 @@
 interface Config {
   apiBaseUrl: string;
+  imagePrefix: string;
 }
 
 export const config: Config = {
-//   apiBaseUrl: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8001/',
   apiBaseUrl: 'http://localhost:8001',
+  imagePrefix: "http://localhost:8001/images/",
 };
 

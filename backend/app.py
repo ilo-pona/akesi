@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from typing import List
 import os
+import uuid
 
 app = FastAPI()
 
@@ -22,6 +24,9 @@ client = AsyncIOMotorClient(os.getenv("MONGO_URI", "mongodb://localhost:27019"))
 db = client.stories
 stories_collection = db.stories
 
+# Add these constants at the top of the file, after the imports
+IMAGE_UPLOAD_DIR = os.getenv("IMAGE_UPLOAD_DIR", "./images")
+os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -59,8 +64,11 @@ async def root():
 
 
 @app.get("/stories", response_model=List[Story])
-async def get_stories():
-    stories = await stories_collection.find().to_list(10)
+async def get_stories(
+    skip: int = Query(0, ge=0, description="Number of stories to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Number of stories to return")
+):
+    stories = await stories_collection.find().skip(skip).limit(limit).to_list(limit)
     return [Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"}) for story in stories]
 
 
@@ -98,3 +106,21 @@ async def delete_story(story_id: str):
     if delete_result.deleted_count == 1:
         return {"message": "Story deleted successfully"}
     raise HTTPException(status_code=404, detail="Story not found")
+
+@app.put("/images", response_model=dict)
+async def upload_image(file: UploadFile = File(...)):
+    file_extension = os.path.splitext(file.filename)[1]
+    new_filename = f"{uuid.uuid4()}{file_extension}"
+    file_path = os.path.join(IMAGE_UPLOAD_DIR, new_filename)
+    
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+    
+    return {"image_id": new_filename}
+
+@app.get("/images/{image_id}")
+async def get_image(image_id: str):
+    file_path = os.path.join(IMAGE_UPLOAD_DIR, image_id)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="Image not found")

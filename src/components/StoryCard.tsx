@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '../contexts/SettingsContext';
-import { Story } from '../data/stories';
+import { Story } from '../types/Story';
 
 interface StoryCardProps {
-  story: Story;
+  story: Story & { title: React.ReactNode };
 }
 
 const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
@@ -26,7 +26,7 @@ const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden ${getFontClass()}`}>
       <Link to={`/story/${story.id}`}>
-        <img src={story.imageUrl} alt={story.title} className="w-full h-48 object-cover hover:opacity-80 transition-opacity" />
+        <img src={story.imageUrl} alt={typeof story.title === 'string' ? story.title : 'Story image'} className="w-full h-48 object-cover hover:opacity-80 transition-opacity" />
       </Link>
       <div className="p-4">
         <Link to={`/story/${story.id}`}>

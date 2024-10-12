@@ -9,7 +9,11 @@ interface WordHintProps {
 const WordHint: React.FC<WordHintProps> = ({ word }) => {
   const [showHint, setShowHint] = useState(false);
   const { settings } = useSettings();
-  const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(w => w.word === word.toLowerCase());
+  
+  // Trim punctuation from the start and end of the word
+  const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, '').toLowerCase();
+  
+  const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(w => w.word === trimmedWord);
   const hintRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
