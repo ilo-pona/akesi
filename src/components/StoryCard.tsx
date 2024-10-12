@@ -4,10 +4,11 @@ import { useSettings } from '../contexts/SettingsContext';
 import { Story } from '../types/Story';
 
 interface StoryCardProps {
-  story: Story & { title: React.ReactNode };
+  story: Story;
+  renderFunction: (text: string, isEnglish?: boolean) => React.ReactNode;
 }
 
-const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
+const StoryCard: React.FC<StoryCardProps> = ({ story, renderFunction }) => {
   const { settings } = useSettings();
 
   const getFontClass = () => {
@@ -30,16 +31,18 @@ const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
       </Link>
       <div className="p-4">
         <Link to={`/story/${story.id}`}>
-          <h2 className="text-xl font-semibold mb-2 hover:text-green-600 transition-colors">{story.title}</h2>
+          <h2 className="text-xl font-semibold mb-2 hover:text-green-600 transition-colors">
+            {renderFunction(story.title)}
+          </h2>
         </Link>
-        <p className="text-gray-600 mb-2">{story.summary}</p>
-        <p className="text-sm text-gray-500 mb-2">{story.date}</p>
+        <p className="text-gray-600 mb-2">{renderFunction(story.summary)}</p>
+        <p className="text-sm text-gray-500 mb-2">{renderFunction(story.date, true)}</p>
         <div className="flex justify-between items-center">
           <Link to={`/story/${story.id}`} className="text-green-600 hover:underline">
-            Read more
+            {renderFunction("Read more", true)}
           </Link>
           <a href={story.originalLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm">
-            Original source
+            {renderFunction("Original source", true)}
           </a>
         </div>
       </div>
