@@ -28,3 +28,20 @@
 .font-sitelen-pona-pona {
   font-family: 'sitelen-pona-pona', sans-serif;
 }
+
+.font-custom {
+  font-family: 'CustomFont', sans-serif;
+}
+
+.font-fairfax-pona-hd {
+  font-family: 'Fairfax Pona HD', sans-serif;
+}
+
+.word-hint-container {
+  word-spacing: 0.25em; /* Adjust as needed */
+}
+
+.word-hint-container:hover {
+  cursor: pointer;
+  /* text-decoration: underline; */
+}

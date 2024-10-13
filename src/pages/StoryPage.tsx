@@ -1,20 +1,56 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { useSettings } from '../contexts/SettingsContext';
 import { useStories } from '../contexts/StoriesContext';
-import WordHint from '../components/WordHint';
 
-const StoryPage: React.FC = () => {
+interface StoryPageProps {
+  renderText: (text: string, isEnglish?: boolean) => React.ReactNode;
+}
+
+const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
   const { id } = useParams<{ id: string }>();
   const { state: { stories, loading, error } } = useStories();
-  const { settings } = useSettings();
+
+  const handleWordInteraction = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const range = document.caretPositionFromPoint(event.clientX, event.clientY);
+    if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
+      const text = range.offsetNode.textContent || '';
+      const word = getWordAtPoint(text, range.offset);
+      if (word) {
+        // Handle the word interaction (e.g., show a tooltip)
+        console.log('Interacted word:', word);
+      }
+    }
+  }, []);
+
+  const getWordAtPoint = (text: string, offset: number): string | null => {
+    const beforePoint = text.slice(0, offset);
+    const afterPoint = text.slice(offset);
+    const wordBefore = beforePoint.match(/\S+$/);
+    const wordAfter = afterPoint.match(/^\S+/);
+    if (wordBefore || wordAfter) {
+      return ((wordBefore && wordBefore[0]) || '') + ((wordAfter && wordAfter[0]) || '');
+    }
+    return null;
+  };
+
+  const renderContent = (content: string) => {
+    return (
+      <div 
+        className="word-hint-container" 
+        onClick={handleWordInteraction}
+        onMouseMove={handleWordInteraction}
+      >
+        {renderText(content)}
+      </div>
+    );
+  };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{renderText("Loading...", true)}</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>{renderText(`Error: ${error}`, true)}</div>;
   }
 
   const story = stories.find((s) => s.id === id);
@@ -23,40 +59,18 @@ const StoryPage: React.FC = () => {
     return <Navigate to="/" replace />;
   }
 
-  const getFontClass = () => {
-    switch (settings.font) {
-      case 'nasin_nampa':
-        return 'font-nasin-nanpa';
-      case 'linja_pona':
-        return 'font-linja-pona';
-      case 'sitelen_pona_pona':
-        return 'font-sitelen-pona-pona';
-      default:
-        return '';
-    }
-  };
-
-  const renderContent = (content: string) => {
-    return content.split(/\s+/).map((word, index) => (
-      <React.Fragment key={index}>
-        <WordHint word={word} />
-        {' '}
-      </React.Fragment>
-    ));
-  };
-
   return (
-    <div className={`max-w-3xl mx-auto ${getFontClass()}`}>
-      <h1 className="text-3xl font-bold mb-4">{story.title}</h1>
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">{renderText(story.title)}</h1>
       <img src={story.imageUrl} alt={story.title} className="w-full h-64 object-cover mb-6 rounded-lg" />
       <div className="mb-4 text-gray-600">
-        <p>Date: {story.date}</p>
+        <p>{renderText("Date:", true)} {renderText(story.date)}</p>
         <a href={story.originalLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-          Original source
+          {renderText("Original source", true)}
         </a>
       </div>
       <div className="prose prose-lg mb-8">{renderContent(story.content)}</div>
-      <Link to="/" className="text-green-600 hover:underline">← Back to Home</Link>
+      <Link to="/" className="text-green-600 hover:underline">{renderText("← Back to Home", true)}</Link>
     </div>
   );
 };

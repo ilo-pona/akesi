@@ -6,6 +6,7 @@ import { Story } from "../types/Story";
 import { config } from "../config";
 import { useLocation } from "react-router-dom";
 import { convertToUCSUR } from "../utils/ucsurConverter";
+import { getFontClass } from "../config/fontConfig";
 
 const STORIES_PER_PAGE = 4;
 const PAGES_TO_FETCH = 2;
@@ -61,41 +62,19 @@ const HomePage: React.FC = () => {
     fetchStories();
   }, [currentPage]);
 
-  const getFontClass = () => {
-    if (settings.useUCSUR) {
-      switch (settings.font) {
-        case "ucsur_font_1":
-          return "font-ucsur-1";
-        case "ucsur_font_2":
-          return "font-ucsur-2";
-        default:
-          return "font-ucsur-default";
-      }
-    } else {
-      switch (settings.font) {
-        case "nasin_nampa":
-          return "nasin-nanpa";
-        case "linja_pona":
-          return "font-linja-pona";
-        case "sitelen_pona_pona":
-          return "font-sitelen-pona-pona";
-        default:
-          return "";
-      }
-    }
-  };
-
   const renderText = (text: string, isEnglish: boolean = false) => {
     if (isEnglish) {
       return <span className="font-sans">{text}</span>;
     }
-    
+
     let processedText = text;
-    if (settings.useUCSUR) {
-      processedText = convertToUCSUR(text) as string;
+    if (settings.render === "sitelen_pona" && settings.useUCSUR) {
+      console.log("Render text says to use ucsur");
+      processedText = convertToUCSUR(text);
     }
-    
-    return <span className={getFontClass()}>{processedText}</span>;
+
+    console.log("Render text use " + getFontClass(settings.font) + " for " + text);
+    return <span className={getFontClass(settings.font)}>{processedText}</span>;
   };
 
   const renderTitle = (title: string) => {

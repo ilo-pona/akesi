@@ -14,7 +14,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "https://github.com/ETBCOR/nasin-nanpa/releases/download/n4.0.1/nasin-nanpa-4.0.1-UCSUR.otf",
+    url: "/fonts/nasin-nanpa-4.0.1-UCSUR.otf",
   },
   {
     value: "Fairfax Pona HD",
@@ -22,7 +22,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "https://github.com/ETBCOR/fairfax-pona-hd/releases/download/v1.0.0/FairfaxPonaHD-Regular.otf",
+    url: "http://localhost:8002/fonts/FairfaxPonaHD.ttf"
   },
   {
     value: "linjapona-Regular",
@@ -30,7 +30,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "https://github.com/janSame/linja-pona/blob/master/linja-pona-4.9.otf",
+    url: "/fonts/linja-pona-4.9.otf",
   },
   {
     value: "sitelen pona pona",
@@ -38,7 +38,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "https://github.com/jackhumbert/sitelen-pona-pona/releases/download/v0.2/sitelen-pona-pona.otf",
+    url: "/fonts/sitelen-pona-pona.otf",
   },
   {
     value: "sans_serif",
@@ -69,4 +69,9 @@ export function getFontClass(font: string): string {
     default:
       return "font-sans";
   }
+}
+
+export function getFontFamily(font: string): string {
+  const selectedFont = fontOptions.find(option => option.value === font);
+  return selectedFont ? selectedFont.value : 'sans-serif';
 }
