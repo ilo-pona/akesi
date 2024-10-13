@@ -44,7 +44,8 @@ const WordHint: React.FC<WordHintProps> = ({ word }) => {
       {showHint && (
         <div className="absolute z-10 bg-white border border-gray-200 rounded p-2 shadow-lg mt-1 w-64 left-1/2 transform -translate-x-1/2">
           <div className="flex items-center mb-2">
-            <img src={wordInfo.glyph} alt={wordInfo.word} className="w-8 h-8 mr-2" />
+            {/* <img src={wordInfo.glyph} alt={wordInfo.word} className="w-8 h-8 mr-2" /> */}
+            <span className="mr-2">{wordInfo.glyph}XX</span>
             <span className="font-bold">{wordInfo.word}</span>
           </div>
           <p className="text-sm">{wordInfo.definition}</p>
