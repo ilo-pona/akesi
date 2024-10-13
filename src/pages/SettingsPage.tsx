@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSettings } from '../contexts/SettingsContext';
-import { X, ToggleLeft, ToggleRight } from 'lucide-react';
+import { X } from 'lucide-react';
+import { fontOptions, defaultAsciiFont, defaultUcsurFont, defaultEnglishFont } from '../config/fontConfig';
 
 // Change the component props to accept an onClose function
 interface SettingsPageProps {
@@ -9,6 +10,28 @@ interface SettingsPageProps {
 
 const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
   const { settings, updateSettings } = useSettings();
+
+  const availableFonts = fontOptions.filter(font => 
+    (settings.render === 'sitelen_pona' && settings.useUCSUR && font.ucsurCompatible) ||
+    (settings.render === 'sitelen_pona' && !settings.useUCSUR && font.asciiCompatible) ||
+    (settings.render === 'latin' && font.englishCompatible)
+  );
+
+  const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateSettings({ font: e.target.value });
+  };
+
+  const handleRenderChange = () => {
+    const newRender = settings.render === 'latin' ? 'sitelen_pona' : 'latin';
+    const newFont = newRender === 'latin' ? defaultEnglishFont : (settings.useUCSUR ? defaultUcsurFont : defaultAsciiFont);
+    updateSettings({ render: newRender, font: newFont });
+  };
+
+  const handleUCSURChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUseUCSUR = e.target.checked;
+    const newFont = newUseUCSUR ? defaultUcsurFont : defaultAsciiFont;
+    updateSettings({ useUCSUR: newUseUCSUR, font: newFont });
+  };
 
   return (
     // Add an overlay div and a modal container
@@ -29,7 +52,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
             <div className="flex items-center space-x-4">
               <span className="text-lg font-medium">latin</span>
               <button
-                onClick={() => updateSettings({ render: settings.render === 'latin' ? 'sitelen_pona' : 'latin' })}
+                onClick={handleRenderChange}
                 className="relative inline-flex items-center h-10 rounded-full w-20 bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <span className={`${settings.render === 'latin' ? 'translate-x-1' : 'translate-x-11'} inline-block w-8 h-8 transform bg-white rounded-full transition-transform`} />
@@ -43,7 +66,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
                   type="checkbox"
                   id="useUCSUR"
                   checked={settings.useUCSUR}
-                  onChange={(e) => updateSettings({ useUCSUR: e.target.checked })}
+                  onChange={handleUCSURChange}
                   className="mr-2"
                 />
                 <label htmlFor="useUCSUR">Use UCSUR</label>
@@ -55,12 +78,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
             <h2 className="text-xl font-semibold mb-2">Font</h2>
             <select
               value={settings.font}
-              onChange={(e) => updateSettings({ font: e.target.value as 'nasin_nampa' | 'linja_pona' | 'sitelen_pona_pona' })}
+              onChange={handleFontChange}
               className="w-full p-2 border rounded"
             >
-              <option value="nasin_nampa">nasin nanpa</option>
-              <option value="linja_pona">linja pona</option>
-              <option value="sitelen_pona_pona">sitelen pona pona</option>
+              {availableFonts.map(font => (
+                <option key={font.value} value={font.value}>{font.label}</option>
+              ))}
             </select>
           </div>
 
