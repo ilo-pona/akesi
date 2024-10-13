@@ -5,16 +5,20 @@ export interface FontOption {
   asciiCompatible: boolean;
   englishCompatible: boolean;
   url: string | null;
+  creator: string | null;
+  link: string | null;
 }
 
 export const fontOptions: FontOption[] = [
   {
     value: "nasin-nanpa",
     label: "nasin nanpa",
-    ucsurCompatible: false,
-    asciiCompatible: true,
+    ucsurCompatible: true,
+    asciiCompatible: false,
     englishCompatible: false,
-    url: "/fonts/nasin-nanpa-4.0.1-UCSUR.otf",
+    url: "http://localhost:8002/fonts/nasin-nanpa-4.0.1-UCSUR.otf",
+    creator: "ETBCOR",
+    link: "https://github.com/ETBCOR/nasin-nanpa",
   },
   {
     value: "Fairfax Pona HD",
@@ -22,23 +26,49 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/FairfaxPonaHD.ttf"
+    url: "http://localhost:8002/fonts/FairfaxPonaHD.ttf",
+    creator: "Kreative Korporation",
+    link: "https://www.kreativekorp.com/software/fonts/fairfaxhd",
   },
   {
-    value: "linjapona-Regular",
+    value: "linja pona",
     label: "linja pona",
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "/fonts/linja-pona-4.9.otf",
+    url: "http://localhost:8002/fonts/linja-pona-4.9.otf",
+    creator: "jan Same",
+    link: "https://github.com/janSame/linja-pona",
   },
   {
-    value: "sitelen pona pona",
+    value: "sitelen-pona",
     label: "sitelen pona pona",
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "/fonts/sitelen-pona-pona.otf",
+    url: "http://localhost:8002/fonts/sitelen-pona-pona.otf",
+    creator: "Jack Humbert",
+    link: "https://jackhumbert.github.io/sitelen-pona-pona/",
+  },
+  {
+    value: "nasin-sitelen-pu",
+    label: "nasin sitelen pu mono",
+    ucsurCompatible: true,
+    asciiCompatible: true,
+    englishCompatible: false,
+    url: "http://localhost:8002/fonts/NasinSitelenPuMono.otf",
+    creator: "Lipu Linku",
+    link: "https://github.com/lipu-linku/nasin-sitelen",
+  },
+  {
+    value: "sitelen seli kiwen asuki",
+    label: "sitelen seli kiwen asuki",
+    ucsurCompatible: true,
+    asciiCompatible: true,
+    englishCompatible: false,
+    url: "http://localhost:8002/fonts/sitelenselikwenasuki.otf",
+    creator: "Kreative Korporation",
+    link: "https://github.com/kreativekorp/sitelen-seli-kiwen",
   },
   {
     value: "sans_serif",
@@ -47,6 +77,8 @@ export const fontOptions: FontOption[] = [
     asciiCompatible: false,
     englishCompatible: true,
     url: null,
+    creator: null,
+    link: null,
   },
 ];
 
@@ -56,22 +88,7 @@ export const defaultEnglishFont = "sans_serif";
 
 export const defaultRenderMode: "ascii" | "sitelen_pona" = "ascii";
 
-export function getFontClass(font: string): string {
-  switch (font) {
-    case "nasin_nanpa":
-      return "font-nasin-nanpa";
-    case "Fairfax Pona HD":
-      return "font-fairfax-pona-hd";
-    case "linjapona-Regular":
-      return "font-linja-pona";
-    case "sitelen pona pona":
-      return "font-sitelen-pona-pona";
-    default:
-      return "font-sans";
-  }
-}
-
 export function getFontFamily(font: string): string {
-  const selectedFont = fontOptions.find(option => option.value === font);
-  return selectedFont ? selectedFont.value : 'sans-serif';
+  const selectedFont = fontOptions.find((option) => option.value === font);
+  return selectedFont ? selectedFont.value : "sans-serif";
 }
