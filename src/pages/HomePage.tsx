@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import StoryCard from "../components/StoryCard";
-import WordHint from "../components/WordHint";
+import { EnhancedText } from "../components/EnhancedText";
 import { useSettings } from "../contexts/SettingsContext";
 import { Story } from "../types/Story";
 import { config } from "../config";
 import { useLocation } from "react-router-dom";
-import { convertToUCSUR } from "../utils/ucsurConverter";
-import { getFontClass } from "../config/fontConfig";
 
 const STORIES_PER_PAGE = 4;
 const PAGES_TO_FETCH = 2;
@@ -62,29 +60,6 @@ const HomePage: React.FC = () => {
     fetchStories();
   }, [currentPage]);
 
-  const renderText = (text: string, isEnglish: boolean = false) => {
-    if (isEnglish) {
-      return <span className="font-sans">{text}</span>;
-    }
-
-    let processedText = text;
-    if (settings.render === "sitelen_pona" && settings.useUCSUR) {
-      console.log("Render text says to use ucsur");
-      processedText = convertToUCSUR(text);
-    }
-
-    console.log("Render text use " + getFontClass(settings.font) + " for " + text);
-    return <span className={getFontClass(settings.font)}>{processedText}</span>;
-  };
-
-  const renderTitle = (title: string) => {
-    return title.split(" ").map((word, index) => (
-      <React.Fragment key={index}>
-        {/* <WordHint word={word} renderFunction={renderText} />{" "} */}
-      </React.Fragment>
-    ));
-  };
-
   const currentStories = stories.slice(0, STORIES_PER_PAGE);
 
   const handleOlderStories = () => {
@@ -98,23 +73,19 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">
-        {renderText("ijo sin pa toki pona", true)}
+        <EnhancedText text="ijo sin pa toki pona" isEnglish={true} />
       </h1>
       {loading ? (
-        <p>{renderText("Loading stories...", true)}</p>
+        <p><EnhancedText text="Loading stories..." isEnglish={true} /></p>
       ) : error ? (
-        <p className="text-red-500">{renderText(error, true)}</p>
+        <p className="text-red-500"><EnhancedText text={error} isEnglish={true} /></p>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {currentStories.map((story, index) => (
               <StoryCard
                 key={`${story.id}-${index}`}
-                story={{
-                  ...story,
-                  title: renderTitle(story.title),
-                }}
-                renderFunction={renderText}
+                story={story}
               />
             ))}
           </div>
@@ -124,7 +95,7 @@ const HomePage: React.FC = () => {
                 onClick={handleNewerStories}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
-                {renderText("Newer Stories", true)}
+                <EnhancedText text="Newer Stories" isEnglish={true} />
               </button>
             )}
             {hasOlderStories && (
@@ -132,7 +103,7 @@ const HomePage: React.FC = () => {
                 onClick={handleOlderStories}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
-                {renderText("Older Stories", true)}
+                <EnhancedText text="Older Stories" isEnglish={true} />
               </button>
             )}
           </div>

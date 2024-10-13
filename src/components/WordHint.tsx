@@ -1,5 +1,6 @@
 import React from 'react';
 import { tokiPonaDictionary, TokiPonaWord } from '../data/tokiPonaDictionary';
+import { EnhancedText } from './EnhancedText';
 
 interface WordHintProps {
   word: string;
@@ -22,13 +23,20 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
       style={{
         left: `${position.x}px`,
         top: `${position.y + 20}px`,
+        fontSize: '14px',
+        lineHeight: '1.5',
+        color: '#333',
       }}
     >
       <div className="flex items-center mb-2">
-        <span className="mr-2">{wordInfo.glyph}</span>
-        <span className="font-bold">{wordInfo.word}</span>
+        <span className="mr-2 text-2xl">{wordInfo.glyph}</span>
+        <span className="font-bold">
+          <EnhancedText text={wordInfo.word} />
+        </span>
       </div>
-      <p className="text-sm">{wordInfo.definition}</p>
+      <p className="text-sm">
+        <EnhancedText text={wordInfo.definition} isEnglish={true} />
+      </p>
     </div>
   );
 };

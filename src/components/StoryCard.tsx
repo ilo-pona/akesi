@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '../contexts/SettingsContext';
 import { Story } from '../types/Story';
+import { EnhancedText } from './EnhancedText';
 
 interface StoryCardProps {
   story: Story;
-  renderFunction: (text: string, isEnglish?: boolean) => React.ReactNode;
 }
 
-const StoryCard: React.FC<StoryCardProps> = ({ story, renderFunction }) => {
+const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
   const { settings } = useSettings();
 
   const getFontClass = () => {
@@ -27,22 +27,22 @@ const StoryCard: React.FC<StoryCardProps> = ({ story, renderFunction }) => {
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden ${getFontClass()}`}>
       <Link to={`/story/${story.id}`}>
-        <img src={story.imageUrl} alt={typeof story.title === 'string' ? story.title : 'Story image'} className="w-full h-48 object-cover hover:opacity-80 transition-opacity" />
+        <img src={story.imageUrl} alt={story.title} className="w-full h-48 object-cover hover:opacity-80 transition-opacity" />
       </Link>
       <div className="p-4">
         <Link to={`/story/${story.id}`}>
           <h2 className="text-xl font-semibold mb-2 hover:text-green-600 transition-colors">
-            {renderFunction(story.title)}
+            <EnhancedText text={story.title} />
           </h2>
         </Link>
-        <p className="text-gray-600 mb-2">{renderFunction(story.summary)}</p>
-        <p className="text-sm text-gray-500 mb-2">{renderFunction(story.date, true)}</p>
+        <p className="text-gray-600 mb-2"><EnhancedText text={story.summary} /></p>
+        <p className="text-sm text-gray-500 mb-2"><EnhancedText text={story.date} isEnglish={true} /></p>
         <div className="flex justify-between items-center">
           <Link to={`/story/${story.id}`} className="text-green-600 hover:underline">
-            {renderFunction("Read more", true)}
+            <EnhancedText text="Read more" isEnglish={true} />
           </Link>
           <a href={story.originalLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm">
-            {renderFunction("Original source", true)}
+            <EnhancedText text="Original source" isEnglish={true} />
           </a>
         </div>
       </div>

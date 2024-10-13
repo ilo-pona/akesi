@@ -1,84 +1,20 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
-import { useSettings } from "../contexts/SettingsContext";
-import WordHint from "../components/WordHint";
+import { EnhancedText } from "../components/EnhancedText";
 
-interface StoryPageProps {
-  renderText: (text: string, isEnglish?: boolean) => React.ReactNode;
-}
-
-const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
-  const [selectedWord, setSelectedWord] = useState<string | null>(null);
-  const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
+const StoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { settings } = useSettings();
   const {
     state: { stories, loading, error },
   } = useStories();
 
-  const handleWordInteraction = useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
-      const range = document.caretPositionFromPoint(
-        event.clientX,
-        event.clientY
-      );
-      if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
-        const text = range.offsetNode.textContent || "";
-        const word = getWordAtPoint(text, range.offset);
-        if (word) {
-          setSelectedWord(word);
-          setHintPosition({ x: event.clientX, y: event.clientY });
-        } else {
-          setSelectedWord(null);
-          setHintPosition(null);
-        }
-      }
-    },
-    []
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setSelectedWord(null);
-    setHintPosition(null);
-  }, []);
-
-  const getWordAtPoint = (text: string, offset: number): string | null => {
-    const beforePoint = text.slice(0, offset);
-    const afterPoint = text.slice(offset);
-    const wordBefore = beforePoint.match(/\S+$/);
-    const wordAfter = afterPoint.match(/^\S+/);
-    if (wordBefore || wordAfter) {
-      return (
-        ((wordBefore && wordBefore[0]) || "") +
-        ((wordAfter && wordAfter[0]) || "")
-      );
-    }
-    return null;
-  };
-
-  const renderContent = (content: string) => {
-    return (
-      <div 
-        className="word-hint-container relative" 
-        onClick={handleWordInteraction}
-        onMouseMove={handleWordInteraction}
-        onMouseLeave={handleMouseLeave}
-      >
-        {renderText(content)}
-        {settings.showHints && selectedWord && hintPosition && (
-          <WordHint word={selectedWord} position={hintPosition} />
-        )}
-      </div>
-    );
-  };
-
   if (loading) {
-    return <div>{renderText("Loading...", true)}</div>;
+    return <div><EnhancedText text="Loading..." isEnglish={true} /></div>;
   }
 
   if (error) {
-    return <div>{renderText(`Error: ${error}`, true)}</div>;
+    return <div><EnhancedText text={`Error: ${error}`} isEnglish={true} /></div>;
   }
 
   const story = stories.find((s) => s.id === id);
@@ -89,7 +25,7 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">{renderText(story.title)}</h1>
+      <h1 className="text-3xl font-bold mb-4"><EnhancedText text={story.title} /></h1>
       <img
         src={story.imageUrl}
         alt={story.title}
@@ -97,7 +33,7 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
       />
       <div className="mb-4 text-gray-600">
         <p>
-          {renderText("Date:", true)} {renderText(story.date)}
+          <EnhancedText text="Date:" isEnglish={true} /> <EnhancedText text={story.date} />
         </p>
         <a
           href={story.originalLink}
@@ -105,12 +41,12 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
           rel="noopener noreferrer"
           className="text-blue-500 hover:underline"
         >
-          {renderText("Original source", true)}
+          <EnhancedText text="Original source" isEnglish={true} />
         </a>
       </div>
-      <div className="prose prose-lg mb-8">{renderContent(story.content)}</div>
+      <div className="prose prose-lg mb-8"><EnhancedText text={story.content} /></div>
       <Link to="/" className="text-green-600 hover:underline">
-        {renderText("← Back to Home", true)}
+        <EnhancedText text="← Back to Home" isEnglish={true} />
       </Link>
     </div>
   );
