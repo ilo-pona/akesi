@@ -95,7 +95,7 @@ const HomePage: React.FC = () => {
                 onClick={handleNewerStories}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
-                <EnhancedText text="Newer Stories" isEnglish={true} />
+                <EnhancedText text="lipu sin" isEnglish={false} />
               </button>
             )}
             {hasOlderStories && (
@@ -103,7 +103,7 @@ const HomePage: React.FC = () => {
                 onClick={handleOlderStories}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
-                <EnhancedText text="Older Stories" isEnglish={true} />
+                <EnhancedText text="lipu pini" isEnglish={false} />
               </button>
             )}
           </div>

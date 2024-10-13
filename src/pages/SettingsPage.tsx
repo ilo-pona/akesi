@@ -56,7 +56,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <span className="text-lg font-medium">latin</span>
+              <span className="text-lg font-medium">Latin</span>
               <button
                 onClick={handleRenderChange}
                 className="relative inline-flex items-center h-10 rounded-full w-20 bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

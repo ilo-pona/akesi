@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 // Add openSettings to the component props
 interface HeaderProps {
@@ -12,21 +12,20 @@ const Header: React.FC<HeaderProps> = ({ openSettings }) => {
     <header className="bg-green-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/newest" className="text-2xl font-bold flex items-center">
-          <Sun className="mr-2" />
+          <span className="font-fairfax-pona-hd mr-2">akesi</span>
           Akesi
         </Link>
         <nav>
           <ul className="flex space-x-4 items-center">
-            <li><Link to="/newest" className="hover:underline">Home</Link></li>
-            <li><Link to="/about" className="hover:underline">About</Link></li>
+            <li><Link to="/newest" className="hover:underline font-fairfax-pona-hd">tomo</Link></li>
+            <li><Link to="/about" className="hover:underline font-fairfax-pona-hd">seme</Link></li>
             <li>
-              {/* Change the Link to a button for opening settings */}
               <button
                 onClick={openSettings}
                 className="hover:underline flex items-center"
               >
-                <Settings className="mr-1" size={18} />
-                Settings
+                <Settings size={18} className="mr-1" />
+                sitelen/<span className="font-fairfax-pona-hd">sitelen</span>
               </button>
             </li>
           </ul>
