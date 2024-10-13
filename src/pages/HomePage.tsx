@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">
-        <EnhancedText text="ijo sin pa toki pona" isEnglish={true} />
+        <EnhancedText text="sona sin pi toki pona" isEnglish={false} />
       </h1>
       {loading ? (
         <p><EnhancedText text="Loading stories..." isEnglish={true} /></p>

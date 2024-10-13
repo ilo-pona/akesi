@@ -33,8 +33,8 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
       }}
     >
       <div className="flex items-center mb-2">
-        <span style={{ marginRight: "8px", fontSize: "24px" }}>
-          {wordInfo.glyph}
+        <span className="font-fairfax-pona-hd" style={{ marginRight: "8px", fontSize: "24px" }}>
+          {word}
         </span>
         <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>
