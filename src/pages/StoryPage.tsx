@@ -1,25 +1,44 @@
-import React, { useCallback } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { useStories } from '../contexts/StoriesContext';
+import React, { useCallback, useState } from "react";
+import { useParams, Link, Navigate } from "react-router-dom";
+import { useStories } from "../contexts/StoriesContext";
+import WordHint from "../components/WordHint";
 
 interface StoryPageProps {
   renderText: (text: string, isEnglish?: boolean) => React.ReactNode;
 }
 
 const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
   const { id } = useParams<{ id: string }>();
-  const { state: { stories, loading, error } } = useStories();
+  const {
+    state: { stories, loading, error },
+  } = useStories();
 
-  const handleWordInteraction = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    const range = document.caretPositionFromPoint(event.clientX, event.clientY);
-    if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
-      const text = range.offsetNode.textContent || '';
-      const word = getWordAtPoint(text, range.offset);
-      if (word) {
-        // Handle the word interaction (e.g., show a tooltip)
-        console.log('Interacted word:', word);
+  const handleWordInteraction = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const range = document.caretPositionFromPoint(
+        event.clientX,
+        event.clientY
+      );
+      if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
+        const text = range.offsetNode.textContent || "";
+        const word = getWordAtPoint(text, range.offset);
+        if (word) {
+          setSelectedWord(word);
+          setHintPosition({ x: event.clientX, y: event.clientY });
+        } else {
+          setSelectedWord(null);
+          setHintPosition(null);
+        }
       }
-    }
+    },
+    []
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setSelectedWord(null);
+    setHintPosition(null);
   }, []);
 
   const getWordAtPoint = (text: string, offset: number): string | null => {
@@ -28,7 +47,10 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
     const wordBefore = beforePoint.match(/\S+$/);
     const wordAfter = afterPoint.match(/^\S+/);
     if (wordBefore || wordAfter) {
-      return ((wordBefore && wordBefore[0]) || '') + ((wordAfter && wordAfter[0]) || '');
+      return (
+        ((wordBefore && wordBefore[0]) || "") +
+        ((wordAfter && wordAfter[0]) || "")
+      );
     }
     return null;
   };
@@ -36,11 +58,15 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
   const renderContent = (content: string) => {
     return (
       <div 
-        className="word-hint-container" 
+        className="word-hint-container relative" 
         onClick={handleWordInteraction}
         onMouseMove={handleWordInteraction}
+        onMouseLeave={handleMouseLeave}
       >
         {renderText(content)}
+        {selectedWord && hintPosition && (
+          <WordHint word={selectedWord} position={hintPosition} />
+        )}
       </div>
     );
   };
@@ -62,15 +88,28 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
   return (
     <div className="max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">{renderText(story.title)}</h1>
-      <img src={story.imageUrl} alt={story.title} className="w-full h-64 object-cover mb-6 rounded-lg" />
+      <img
+        src={story.imageUrl}
+        alt={story.title}
+        className="w-full h-64 object-cover mb-6 rounded-lg"
+      />
       <div className="mb-4 text-gray-600">
-        <p>{renderText("Date:", true)} {renderText(story.date)}</p>
-        <a href={story.originalLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+        <p>
+          {renderText("Date:", true)} {renderText(story.date)}
+        </p>
+        <a
+          href={story.originalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
           {renderText("Original source", true)}
         </a>
       </div>
       <div className="prose prose-lg mb-8">{renderContent(story.content)}</div>
-      <Link to="/" className="text-green-600 hover:underline">{renderText("← Back to Home", true)}</Link>
+      <Link to="/" className="text-green-600 hover:underline">
+        {renderText("← Back to Home", true)}
+      </Link>
     </div>
   );
 };

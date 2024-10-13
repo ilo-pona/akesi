@@ -1,57 +1,35 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { tokiPonaDictionary, TokiPonaWord } from '../data/tokiPonaDictionary';
-import { useSettings } from '../contexts/SettingsContext';
 
 interface WordHintProps {
   word: string;
+  position: { x: number; y: number };
 }
 
-const WordHint: React.FC<WordHintProps> = ({ word }) => {
-  const [showHint, setShowHint] = useState(false);
-  const { settings } = useSettings();
-  
+const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
   // Trim punctuation from the start and end of the word
   const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, '').toLowerCase();
   
   const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(w => w.word === trimmedWord);
-  const hintRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (hintRef.current && !hintRef.current.contains(event.target as Node)) {
-        setShowHint(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  if (!settings.showHints || !wordInfo) {
-    return <span>{word}</span>;
+  if (!wordInfo) {
+    return null;
   }
 
   return (
-    <span
-      ref={hintRef}
-      className="relative inline-block cursor-pointer"
-      onMouseEnter={() => setShowHint(true)}
-      onMouseLeave={() => setShowHint(false)}
+    <div
+      className="fixed z-50 bg-white border border-gray-200 rounded p-2 shadow-lg w-64"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y + 20}px`,
+      }}
     >
-      {word}
-      {showHint && (
-        <div className="absolute z-10 bg-white border border-gray-200 rounded p-2 shadow-lg mt-1 w-64 left-1/2 transform -translate-x-1/2">
-          <div className="flex items-center mb-2">
-            {/* <img src={wordInfo.glyph} alt={wordInfo.word} className="w-8 h-8 mr-2" /> */}
-            <span className="mr-2">{wordInfo.glyph}XX</span>
-            <span className="font-bold">{wordInfo.word}</span>
-          </div>
-          <p className="text-sm">{wordInfo.definition}</p>
-        </div>
-      )}
-    </span>
+      <div className="flex items-center mb-2">
+        <span className="mr-2">{wordInfo.glyph}</span>
+        <span className="font-bold">{wordInfo.word}</span>
+      </div>
+      <p className="text-sm">{wordInfo.definition}</p>
+    </div>
   );
 };
 
