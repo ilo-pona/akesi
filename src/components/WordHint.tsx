@@ -1,6 +1,6 @@
-import React from 'react';
-import { tokiPonaDictionary, TokiPonaWord } from '../data/tokiPonaDictionary';
-import { EnhancedText } from './EnhancedText';
+import React from "react";
+import { tokiPonaDictionary, TokiPonaWord } from "../data/tokiPonaDictionary";
+import { EnhancedText } from "./EnhancedText";
 
 interface WordHintProps {
   word: string;
@@ -9,9 +9,11 @@ interface WordHintProps {
 
 const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
   // Trim punctuation from the start and end of the word
-  const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, '').toLowerCase();
-  
-  const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(w => w.word === trimmedWord);
+  const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, "").toLowerCase();
+
+  const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(
+    (w) => w.word === trimmedWord
+  );
 
   if (!wordInfo) {
     return null;
@@ -19,23 +21,25 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
 
   return (
     <div
-      className="fixed z-50 bg-white border border-gray-200 rounded p-2 shadow-lg w-64"
+      className="fixed z-50 bg-white border border-gray-200 rounded p-2 shadow-lg"
       style={{
         left: `${position.x}px`,
         top: `${position.y + 20}px`,
-        fontSize: '14px',
-        lineHeight: '1.5',
-        color: '#333',
+        width: "256px",
+        fontFamily: "Arial, sans-serif",
+        fontSize: "14px",
+        lineHeight: "1.5",
+        color: "#333",
       }}
     >
       <div className="flex items-center mb-2">
-        <span className="mr-2 text-2xl">{wordInfo.glyph}</span>
-        <span className="font-bold">
-          <EnhancedText text={wordInfo.word} />
+        <span style={{ marginRight: "8px", fontSize: "24px" }}>
+          {wordInfo.glyph}
         </span>
+        <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>
-      <p className="text-sm">
-        <EnhancedText text={wordInfo.definition} isEnglish={true} />
+      <p style={{ fontSize: "12px", margin: 0, fontWeight: "normal" }}>
+        {wordInfo.definition}
       </p>
     </div>
   );

@@ -55,9 +55,12 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
 
   const { fontFamily, text: processedText } = renderText(text, isEnglish);
 
+  // Determine which font to use based on the current render mode
+  const currentFont = settings.render === 'latin' ? settings.latinFont : settings.sitelenPonaFont;
+
   return (
     <span 
-      style={{ fontFamily }}
+      style={{ fontFamily: currentFont }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}

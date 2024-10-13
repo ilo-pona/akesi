@@ -2,6 +2,8 @@ import React from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { X } from 'lucide-react';
 import { fontOptions, defaultAsciiFont, defaultUcsurFont, defaultEnglishFont } from '../config/fontConfig';
+// Update the import to match the actual export
+import { EnhancedText } from '../components/EnhancedText';
 
 // Change the component props to accept an onClose function
 interface SettingsPageProps {
@@ -18,13 +20,17 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
   );
 
   const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateSettings({ font: e.target.value });
+    const newFont = e.target.value as FontType;
+    if (settings.render === 'latin') {
+      updateSettings({ latinFont: newFont });
+    } else {
+      updateSettings({ sitelenPonaFont: newFont });
+    }
   };
 
   const handleRenderChange = () => {
     const newRender = settings.render === 'latin' ? 'sitelen_pona' : 'latin';
-    const newFont = newRender === 'latin' ? defaultEnglishFont : (settings.useUCSUR ? defaultUcsurFont : defaultAsciiFont);
-    updateSettings({ render: newRender, font: newFont });
+    updateSettings({ render: newRender });
   };
 
   const handleUCSURChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +83,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
           <div>
             <h2 className="text-xl font-semibold mb-2">Font</h2>
             <select
-              value={settings.font}
+              value={settings.render === 'latin' ? settings.latinFont : settings.sitelenPonaFont}
               onChange={handleFontChange}
               className="w-full p-2 border rounded"
             >
@@ -96,6 +102,17 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
               className="mr-2"
             />
             <label htmlFor="showHints">Show hints</label>
+          </div>
+
+          {/* Add preview box */}
+          <div className="mt-8 border-t pt-6">
+            <h2 className="text-xl font-semibold mb-4">Preview</h2>
+            <div className="p-4 border rounded-lg flex justify-center items-center" style={{ minHeight: '100px', fontSize: '1.875rem' }}>
+              <EnhancedText
+                text="toki pona li pona"
+                isEnglish={false}
+              />
+            </div>
           </div>
         </div>
       </div>

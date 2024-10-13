@@ -7,7 +7,8 @@ type FontType = 'nasin_nampa' | 'linja_pona' | 'sitelen_pona_pona';
 interface Settings {
   render: RenderType;
   useUCSUR: boolean;
-  font: FontType;
+  latinFont: FontType;
+  sitelenPonaFont: FontType;
   showHints: boolean;
 }
 
@@ -26,7 +27,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       : {
           render: 'latin',
           useUCSUR: false,
-          font: 'nasin_nampa',
+          latinFont: 'nasin_nampa',
+          sitelenPonaFont: 'linja_pona',
           showHints: false,
         };
   });
