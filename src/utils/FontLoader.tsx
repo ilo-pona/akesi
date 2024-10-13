@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { fontOptions } from '../config/fontConfig';
+import { config } from '../config';
 
 const FontLoader: React.FC = () => {
   const { settings } = useSettings();
@@ -14,7 +15,10 @@ const FontLoader: React.FC = () => {
 
     const selectedFont = fontOptions.find(font => font.value === settings.font);
     if (selectedFont && selectedFont.url) {
-      loadFont(selectedFont.url, selectedFont.value);
+      const fontUrl = selectedFont.url.startsWith('http') 
+        ? selectedFont.url 
+        : `${config.fontPrefix}${selectedFont.url}`;
+      loadFont(fontUrl, selectedFont.value);
     }
   }, [settings.font]);
 

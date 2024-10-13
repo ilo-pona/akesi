@@ -16,7 +16,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: false,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/nasin-nanpa-4.0.1-UCSUR.otf",
+    url: "nasin-nanpa-4.0.1-UCSUR.otf",
     creator: "ETBCOR",
     link: "https://github.com/ETBCOR/nasin-nanpa",
   },
@@ -26,7 +26,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/FairfaxPonaHD.ttf",
+    url: "FairfaxPonaHD.ttf",
     creator: "Kreative Korporation",
     link: "https://www.kreativekorp.com/software/fonts/fairfaxhd",
   },
@@ -36,7 +36,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/linja-pona-4.9.otf",
+    url: "linja-pona-4.9.otf",
     creator: "jan Same",
     link: "https://github.com/janSame/linja-pona",
   },
@@ -46,7 +46,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: false,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/sitelen-pona-pona.otf",
+    url: "sitelen-pona-pona.otf",
     creator: "Jack Humbert",
     link: "https://jackhumbert.github.io/sitelen-pona-pona/",
   },
@@ -56,7 +56,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/NasinSitelenPuMono.otf",
+    url: "NasinSitelenPuMono.otf",
     creator: "Lipu Linku",
     link: "https://github.com/lipu-linku/nasin-sitelen",
   },
@@ -66,7 +66,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "http://localhost:8002/fonts/sitelenselikwenasuki.otf",
+    url: "sitelenselikwenasuki.otf",
     creator: "Kreative Korporation",
     link: "https://github.com/kreativekorp/sitelen-seli-kiwen",
   },
@@ -82,7 +82,7 @@ export const fontOptions: FontOption[] = [
   },
 ];
 
-export const defaultAsciiFont = "nasin nanpa";
+export const defaultAsciiFont = "Fairfax Pona HD";
 export const defaultUcsurFont = "Fairfax Pona HD";
 export const defaultEnglishFont = "sans_serif";
 
