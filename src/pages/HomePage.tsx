@@ -80,7 +80,7 @@ const HomePage: React.FC = () => {
   const renderTitle = (title: string) => {
     return title.split(" ").map((word, index) => (
       <React.Fragment key={index}>
-        <WordHint word={word} renderFunction={renderText} />{" "}
+        {/* <WordHint word={word} renderFunction={renderText} />{" "} */}
       </React.Fragment>
     ));
   };

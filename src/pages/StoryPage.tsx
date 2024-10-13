@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
+import { useSettings } from "../contexts/SettingsContext";
 import WordHint from "../components/WordHint";
 
 interface StoryPageProps {
@@ -11,6 +12,7 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
   const { id } = useParams<{ id: string }>();
+  const { settings } = useSettings();
   const {
     state: { stories, loading, error },
   } = useStories();
@@ -64,7 +66,7 @@ const StoryPage: React.FC<StoryPageProps> = ({ renderText }) => {
         onMouseLeave={handleMouseLeave}
       >
         {renderText(content)}
-        {selectedWord && hintPosition && (
+        {settings.showHints && selectedWord && hintPosition && (
           <WordHint word={selectedWord} position={hintPosition} />
         )}
       </div>
