@@ -33,7 +33,7 @@ const StoryPage: React.FC = () => {
       />
       <div className="mb-4 text-gray-600">
         <p>
-          <EnhancedText text="Date:" isEnglish={true} /> <EnhancedText text={story.date} />
+          <EnhancedText text="tenpo:" isEnglish={false} /> <EnhancedText text={story.date} isEnglish={true} />
         </p>
         <a
           href={story.originalLink}
@@ -41,12 +41,12 @@ const StoryPage: React.FC = () => {
           rel="noopener noreferrer"
           className="text-blue-500 hover:underline"
         >
-          <EnhancedText text="Original source" isEnglish={true} />
+          <EnhancedText text="Source" isEnglish={true} />
         </a>
       </div>
       <div className="prose prose-lg mb-8"><EnhancedText text={story.content} /></div>
       <Link to="/" className="text-green-600 hover:underline">
-        <EnhancedText text="← Back to Home" isEnglish={true} />
+        <EnhancedText text="← o tawa tomo" isEnglish={false} />
       </Link>
     </div>
   );
