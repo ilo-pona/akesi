@@ -34,7 +34,7 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
     >
       <div className="flex items-center mb-2">
         <span className="font-fairfax-pona-hd" style={{ marginRight: "8px", fontSize: "24px" }}>
-          {word}
+          {word.toLowerCase()}
         </span>
         <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>
