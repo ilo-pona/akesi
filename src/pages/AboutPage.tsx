@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { EnhancedText } from "../components/EnhancedText";
 import { fontOptions } from "../config/fontConfig";
 
 const AboutPage: React.FC = () => {
+  const [isTableVisible, setIsTableVisible] = useState(false);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
@@ -79,36 +81,41 @@ const AboutPage: React.FC = () => {
         </div>
       </div>
       <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">Font Credits</h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 text-left">Font Name</th>
-              <th className="p-2 text-left">Creator</th>
-              <th className="p-2 text-left">Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fontOptions
-              .filter((font) => font.creator && font.link)
-              .map((font) => (
-                <tr key={font.value} className="border-b">
-                  <td className="p-2">{font.label}</td>
-                  <td className="p-2">{font.creator}</td>
-                  <td className="p-2">
-                    <a
-                      href={font.link}
-                      className="text-blue-600 hover:text-blue-800 underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {font.link}
-                    </a>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <h4 className="text-lg font-medium mb-2 flex items-center cursor-pointer" onClick={() => setIsTableVisible(!isTableVisible)}>
+          <span className={`transform transition-transform ${isTableVisible ? 'rotate-90' : ''} mr-2`}>▶</span>
+          Font Credits
+        </h4>
+        {isTableVisible && (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 text-left">Font Name</th>
+                <th className="p-2 text-left">Creator</th>
+                <th className="p-2 text-left">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fontOptions
+                .filter((font) => font.creator && font.link)
+                .map((font) => (
+                  <tr key={font.value} className="border-b">
+                    <td className="p-2">{font.label}</td>
+                    <td className="p-2">{font.creator}</td>
+                    <td className="p-2">
+                      <a
+                        href={font.link}
+                        className="text-blue-600 hover:text-blue-800 underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {font.link}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
