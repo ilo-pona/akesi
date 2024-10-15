@@ -39,9 +39,16 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
     updateSettings({ useUCSUR: newUseUCSUR, font: newFont });
   };
 
+  // Add this new function
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    // Add an overlay div and a modal container
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    // Add onClick handler to the overlay div
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleOverlayClick}>
       <div className="bg-white p-6 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Settings</h1>
