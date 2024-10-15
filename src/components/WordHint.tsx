@@ -20,8 +20,8 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
   }
 
   return (
-    <div
-      className="fixed z-50 bg-white border border-gray-200 rounded p-2 shadow-lg"
+    <span
+      className="fixed z-50 inline-block bg-white border border-gray-200 rounded p-2 shadow-lg"
       style={{
         left: `${position.x}px`,
         top: `${position.y + 20}px`,
@@ -38,10 +38,10 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
         </span>
         <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>
-      <p style={{ fontSize: "12px", margin: 0, fontWeight: "normal" }}>
+      <div style={{ fontSize: "12px", margin: 0, fontWeight: "normal" }}>
         {wordInfo.definition}
-      </p>
-    </div>
+      </div>
+    </span>
   );
 };
 
