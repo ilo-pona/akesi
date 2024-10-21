@@ -82,8 +82,8 @@ export const fontOptions: FontOption[] = [
   },
 ];
 
-export const defaultAsciiFont = "Fairfax Pona HD";
-export const defaultUcsurFont = "Fairfax Pona HD";
+export const defaultAsciiFont = "linja pona";
+export const defaultUcsurFont = "nasin-nanpa";
 export const defaultEnglishFont = "sans_serif";
 
 export const defaultRenderMode: "ascii" | "sitelen_pona" = "ascii";

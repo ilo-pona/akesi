@@ -56,10 +56,8 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
   const { fontFamily, text: processedText } = renderText(text, isEnglish);
 
   // Determine which font to use based on isEnglish and the current render mode
-  const currentFont = isEnglish
-    ? settings.latinFont
-    : settings.render === 'latin'
-    ? settings.latinFont
+  const currentFont = isEnglish || settings.render === 'latin'
+    ? 'sans-serif'
     : settings.sitelenPonaFont;
 
   return (

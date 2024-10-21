@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { fontOptions, defaultAsciiFont, defaultUcsurFont, defaultEnglishFont } from '../config/fontConfig';
 // Update the import to match the actual export
 import { EnhancedText } from '../components/EnhancedText';
+import { useEffect } from 'react';
 
 // Change the component props to accept an onClose function
 interface SettingsPageProps {
@@ -13,23 +14,24 @@ interface SettingsPageProps {
 const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
   const { settings, updateSettings } = useSettings();
 
+  // Add this useEffect for debugging
+  useEffect(() => {
+    console.log('Settings updated:', settings);
+  }, [settings]);
+
   const availableFonts = fontOptions.filter(font => 
-    (settings.render === 'sitelen_pona' && settings.useUCSUR && font.ucsurCompatible) ||
-    (settings.render === 'sitelen_pona' && !settings.useUCSUR && font.asciiCompatible) ||
-    (settings.render === 'latin' && font.englishCompatible)
+    (settings.useUCSUR && font.ucsurCompatible) ||
+    (!settings.useUCSUR && font.asciiCompatible)
   );
 
   const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFont = e.target.value as FontType;
-    if (settings.render === 'latin') {
-      updateSettings({ latinFont: newFont });
-    } else {
-      updateSettings({ sitelenPonaFont: newFont });
-    }
+    updateSettings({ sitelenPonaFont: newFont });
   };
 
   const handleRenderChange = () => {
     const newRender = settings.render === 'latin' ? 'sitelen_pona' : 'latin';
+    console.log('Updating render to:', newRender);
     updateSettings({ render: newRender });
   };
 
@@ -87,18 +89,20 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
             )}
           </div>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Font</h2>
-            <select
-              value={settings.render === 'latin' ? settings.latinFont : settings.sitelenPonaFont}
-              onChange={handleFontChange}
-              className="w-full p-2 border rounded"
-            >
-              {availableFonts.map(font => (
-                <option key={font.value} value={font.value}>{font.label}</option>
-              ))}
-            </select>
-          </div>
+          {settings.render === 'sitelen_pona' && (
+            <div>
+              <h2 className="text-xl font-semibold mb-2">sitelen pona Font</h2>
+              <select
+                value={settings.sitelenPonaFont}
+                onChange={handleFontChange}
+                className="w-full p-2 border rounded"
+              >
+                {availableFonts.map(font => (
+                  <option key={font.value} value={font.value}>{font.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="flex items-center">
             <input
@@ -118,6 +122,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
               <EnhancedText
                 text="toki pona li pona"
                 isEnglish={false}
+                key={`${settings.render}-${settings.useUCSUR}-${settings.latinFont}-${settings.sitelenPonaFont}`} // Add this key prop
               />
             </div>
           </div>

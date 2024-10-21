@@ -1,13 +1,13 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { defaultAsciiFont, defaultUcsurFont } from '../config/fontConfig';
 
 type RenderType = 'latin' | 'sitelen_pona';
-type FontType = 'nasin_nampa' | 'linja_pona' | 'sitelen_pona_pona';
+type FontType = string; // Change this to allow any string value
 
 interface Settings {
   render: RenderType;
   useUCSUR: boolean;
-  latinFont: FontType;
   sitelenPonaFont: FontType;
   showHints: boolean;
 }
@@ -27,8 +27,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       : {
           render: 'latin',
           useUCSUR: false,
-          latinFont: 'nasin_nampa',
-          sitelenPonaFont: 'linja_pona',
+          sitelenPonaFont: defaultUcsurFont,
           showHints: false,
         };
   });

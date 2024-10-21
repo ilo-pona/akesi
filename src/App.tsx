@@ -20,7 +20,7 @@ function AppContent() {
   const closeSettings = () => setIsSettingsOpen(false);
 
   const renderText = useCallback((text: string, isEnglish: boolean = false) => {
-    if (isEnglish) {
+    if (isEnglish || settings.render === 'latin') {
       return <span style={{ fontFamily: 'sans-serif' }}>{text}</span>;
     }
     
@@ -29,8 +29,8 @@ function AppContent() {
       processedText = convertToUCSUR(text);
     }
     
-    return <span style={{ fontFamily: getFontFamily(settings.font) }}>{processedText}</span>;
-  }, [settings.render, settings.useUCSUR, settings.font]);
+    return <span style={{ fontFamily: getFontFamily(settings.sitelenPonaFont) }}>{processedText}</span>;
+  }, [settings.render, settings.useUCSUR, settings.sitelenPonaFont]);
 
   return (
     <Router>
