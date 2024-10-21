@@ -50,10 +50,10 @@ const StoryPage: React.FC = () => {
         className="w-full h-64 object-cover mb-6 rounded-lg"
       />
       <div className="mb-4 text-gray-600">
-        <p>
+        <div>
           <EnhancedText text="tenpo:" isEnglish={false} />{" "}
           <EnhancedText text={story.date} isEnglish={true} />
-        </p>
+        </div>
         <a
           href={story.originalLink}
           target="_blank"

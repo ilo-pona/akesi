@@ -59,9 +59,13 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
   const currentFont = isEnglish || settings.render === 'latin'
     ? 'sans-serif'
     : settings.sitelenPonaFont;
+
   return (
     <span 
-      style={{ fontFamily: currentFont }}
+      style={{ 
+        fontFamily: currentFont,
+        display: 'inline',
+      }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}

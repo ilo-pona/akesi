@@ -1,6 +1,8 @@
 import React from "react";
 import { tokiPonaDictionary, TokiPonaWord } from "../data/tokiPonaDictionary";
 import { useSettings } from "../contexts/SettingsContext";
+import { getFontFamily, defaultAsciiFont, defaultUcsurFont } from "../config/fontConfig";
+import { convertToUCSUR } from "../utils/ucsurConverter";
 
 interface WordHintProps {
   word: string;
@@ -9,20 +11,14 @@ interface WordHintProps {
 
 const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
   const { settings } = useSettings();
-
-  // Trim punctuation from the start and end of the word
-  // const trimmedWord = word.toLowerCase();
-  
-  const toki = tokiPonaDictionary.find((w) => w.word == "toki"); // get the toki word
-  // const aaa = JSON.parse(`"${toki?.ucsur}"`)
-  // console.log(toki?.ucsur, word, aaa, word===aaa);
+  var trimmedWord = word;
   const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(
     (w) => {
       if (settings.useUCSUR) {
         const codePoint = JSON.parse(`"${w.ucsur}"`);
         return codePoint === word  || w.word === word;
       } else {
-        const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, "").toLowerCase();
+        trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, "").toLowerCase();
         return w.word === trimmedWord;
       }
     }
@@ -31,8 +27,18 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
     return null;
   }
 
+  const getDisplayFont = () => {
+    if (settings.render === 'latin' || (settings.render === 'sitelen_pona' && !settings.useUCSUR)) {
+      return getFontFamily(settings.sitelenPonaFont) || defaultAsciiFont;
+    } else {
+      return getFontFamily(settings.sitelenPonaFont) || defaultUcsurFont;
+    }
+  };
+
+  const displayWord = settings.useUCSUR ? convertToUCSUR(trimmedWord) : trimmedWord;
+
   return (
-    <span
+    <div
       className="fixed z-50 inline-block bg-white border border-gray-200 rounded p-2 shadow-lg"
       style={{
         left: `${position.x}px`,
@@ -45,15 +51,15 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
       }}
     >
       <div className="flex items-center mb-2">
-        <span className="font-fairfax-pona-hd" style={{ marginRight: "8px", fontSize: "24px" }}>
-          {wordInfo.word.toLowerCase()}
+        <span style={{ marginRight: "8px", fontSize: "24px", fontFamily: getDisplayFont() }}>
+          {displayWord}
         </span>
         <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>
       <div style={{ fontSize: "12px", margin: 0, fontWeight: "normal" }}>
         {wordInfo.definition}
       </div>
-    </span>
+    </div>
   );
 };
 

@@ -35,8 +35,8 @@ const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
             <EnhancedText text={story.title} />
           </h2>
         </Link>
-        <p className="text-gray-600 mb-2"><EnhancedText text={story.summary} /></p>
-        <p className="text-sm text-gray-500 mb-2"><EnhancedText text={story.date} isEnglish={true} /></p>
+        <div className="text-gray-600 mb-2"><EnhancedText text={story.summary} /></div>
+        <div className="text-sm text-gray-500 mb-2"><EnhancedText text={story.date} isEnglish={true} /></div>
         <div className="flex justify-between items-center">
           <Link to={`/story/${story.id}`} className="text-green-600 hover:underline">
             <EnhancedText text="o lukin e ale" isEnglish={false} />

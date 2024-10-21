@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Settings } from 'lucide-react';
+import logo from '/logo.svg';
 
 // Add openSettings to the component props
 interface HeaderProps {
@@ -12,7 +13,8 @@ const Header: React.FC<HeaderProps> = ({ openSettings }) => {
     <header className="bg-green-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/newest" className="text-2xl font-bold flex items-center">
-          <span className="font-fairfax-pona-hd mr-2">akesi</span>
+          {/* <span className="font-fairfax-pona-hd mr-2">akesi</span> */}
+          <img src={logo} alt="Akesi Logo" className="h-8 w-8 mr-2" />
           Akesi
         </Link>
         <nav>
