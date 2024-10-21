@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { X } from 'lucide-react';
-import { fontOptions, defaultAsciiFont, defaultUcsurFont, defaultEnglishFont } from '../config/fontConfig';
+import { fontOptions, defaultAsciiFont, defaultUcsurFont } from '../config/fontConfig';
 // Update the import to match the actual export
 import { EnhancedText } from '../components/EnhancedText';
 import { useEffect } from 'react';
@@ -32,13 +32,18 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
   const handleRenderChange = () => {
     const newRender = settings.render === 'latin' ? 'sitelen_pona' : 'latin';
     console.log('Updating render to:', newRender);
-    updateSettings({ render: newRender });
+    if (newRender === 'sitelen_pona') {
+      const newFont = settings.useUCSUR ? defaultUcsurFont : defaultAsciiFont;
+      updateSettings({ render: newRender, sitelenPonaFont: newFont });
+    } else {
+      updateSettings({ render: newRender });
+    }
   };
 
   const handleUCSURChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUseUCSUR = e.target.checked;
     const newFont = newUseUCSUR ? defaultUcsurFont : defaultAsciiFont;
-    updateSettings({ useUCSUR: newUseUCSUR, font: newFont });
+    updateSettings({ useUCSUR: newUseUCSUR, sitelenPonaFont: newFont });
   };
 
   // Add this new function

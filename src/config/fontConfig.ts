@@ -66,7 +66,7 @@ export const fontOptions: FontOption[] = [
     ucsurCompatible: true,
     asciiCompatible: true,
     englishCompatible: false,
-    url: "sitelenselikwenasuki.otf",
+    url: "sitelenselikiwenasuki.ttf",
     creator: "Kreative Korporation",
     link: "https://github.com/kreativekorp/sitelen-seli-kiwen",
   },

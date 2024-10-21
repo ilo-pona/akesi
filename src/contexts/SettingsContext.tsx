@@ -22,14 +22,20 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<Settings>(() => {
     const savedSettings = Cookies.get('akesiSettings');
-    return savedSettings
-      ? JSON.parse(savedSettings)
-      : {
-          render: 'latin',
-          useUCSUR: false,
-          sitelenPonaFont: defaultUcsurFont,
-          showHints: false,
-        };
+    if (savedSettings) {
+      const parsedSettings = JSON.parse(savedSettings);
+      // Ensure default font is set based on UCSUR setting
+      if (parsedSettings.render === 'sitelen_pona') {
+        parsedSettings.sitelenPonaFont = parsedSettings.useUCSUR ? defaultUcsurFont : defaultAsciiFont;
+      }
+      return parsedSettings;
+    }
+    return {
+      render: 'latin',
+      useUCSUR: false,
+      sitelenPonaFont: defaultAsciiFont,
+      showHints: false,
+    };
   });
 
   useEffect(() => {
