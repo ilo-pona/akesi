@@ -1,6 +1,6 @@
 import React from "react";
 import { tokiPonaDictionary, TokiPonaWord } from "../data/tokiPonaDictionary";
-import { EnhancedText } from "./EnhancedText";
+import { useSettings } from "../contexts/SettingsContext";
 
 interface WordHintProps {
   word: string;
@@ -8,13 +8,25 @@ interface WordHintProps {
 }
 
 const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
+  const { settings } = useSettings();
+
   // Trim punctuation from the start and end of the word
-  const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, "").toLowerCase();
-
+  // const trimmedWord = word.toLowerCase();
+  
+  const toki = tokiPonaDictionary.find((w) => w.word == "toki"); // get the toki word
+  // const aaa = JSON.parse(`"${toki?.ucsur}"`)
+  // console.log(toki?.ucsur, word, aaa, word===aaa);
   const wordInfo: TokiPonaWord | undefined = tokiPonaDictionary.find(
-    (w) => w.word === trimmedWord
+    (w) => {
+      if (settings.useUCSUR) {
+        const codePoint = JSON.parse(`"${w.ucsur}"`);
+        return codePoint === word  || w.word === word;
+      } else {
+        const trimmedWord = word.replace(/^[^\w\s]+|[^\w\s]+$/g, "").toLowerCase();
+        return w.word === trimmedWord;
+      }
+    }
   );
-
   if (!wordInfo) {
     return null;
   }
@@ -34,7 +46,7 @@ const WordHint: React.FC<WordHintProps> = ({ word, position }) => {
     >
       <div className="flex items-center mb-2">
         <span className="font-fairfax-pona-hd" style={{ marginRight: "8px", fontSize: "24px" }}>
-          {word.toLowerCase()}
+          {wordInfo.word.toLowerCase()}
         </span>
         <span style={{ fontWeight: "bold" }}>{wordInfo.word}</span>
       </div>

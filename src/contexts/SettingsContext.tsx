@@ -39,7 +39,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
 
   useEffect(() => {
-    Cookies.set('akesiSettings', JSON.stringify(settings), { expires: 365 });
+    Cookies.set('akesiSettings', JSON.stringify(settings), { expires: 365, sameSite: 'strict' });
   }, [settings]);
 
   const updateSettings = (newSettings: Partial<Settings>) => {
