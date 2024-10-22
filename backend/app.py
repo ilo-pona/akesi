@@ -50,6 +50,7 @@ class Story(BaseModel):
     summary: str
     content: str
     imageUrl: str
+    author: str
     date: str
     originalLink: str
 
