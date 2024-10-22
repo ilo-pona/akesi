@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
 import { EnhancedText } from "../components/EnhancedText";
@@ -6,27 +6,45 @@ import { config } from "../config";
 
 const StoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const {
-    state: { stories, loading, error },
-  } = useStories();
+  const { stories } = useStories();
+  const [story, setStory] = useState<Story | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchStory = async () => {
+      if (stories?.data) {
+        const foundStory = stories.data.find((s) => s.id === id);
+        if (foundStory) {
+          setStory(foundStory);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      try {
+        const response = await fetch(`${config.apiBaseUrl}/stories/${id}`);
+        if (!response.ok) {
+          throw new Error("Story not found");
+        }
+        const fetchedStory = await response.json();
+        setStory(fetchedStory);
+      } catch (error) {
+        console.error("Error fetching story:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStory();
+  }, [id, stories]);
+
+  if (isLoading) {
     return (
       <div>
         <EnhancedText text="Loading..." isEnglish={true} />
       </div>
     );
   }
-
-  if (error) {
-    return (
-      <div>
-        <EnhancedText text={`Error: ${error}`} isEnglish={true} />
-      </div>
-    );
-  }
-
-  const story = stories.find((s) => s.id === id);
 
   if (!story) {
     return <Navigate to="/" replace />;
@@ -41,9 +59,14 @@ const StoryPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">
+      <h1 className="text-3xl font-bold mb-2">
         <EnhancedText text={story.title} />
       </h1>
+      <p className="text-sm text-gray-600 mb-4">
+        <span>tan: jan Kolin</span>
+        {/* <EnhancedText text="tan:" isEnglish={false} />{" "} */}
+        {/* <EnhancedText text="HELLO" isEnglish={true} /> */}
+      </p>
       <img
         src={getImageUrl(story.imageUrl)}
         alt={story.title}
