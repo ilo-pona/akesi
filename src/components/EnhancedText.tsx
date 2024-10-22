@@ -136,7 +136,6 @@ function isLegalTokiPonaWord(word: string): boolean {
 
 // Helper function to wrap text in UCSUR cartouche delimiters if needed
 function wrapCartouche(text: string, useUCSUR: boolean): string {
-  console.log(text, useUCSUR);
   if (useUCSUR) {
     return `${UCSUR_START_CARTOUCHE}${text.slice(1, -1)}${UCSUR_END_CARTOUCHE}`;
   }
