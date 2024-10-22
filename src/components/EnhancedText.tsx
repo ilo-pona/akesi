@@ -91,9 +91,9 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
       });
 
       return (
-        <p key={`p-${paragraphIndex}`} style={{ marginBottom: '1em' }}>
+        <div key={`p-${paragraphIndex}`} style={{ marginBottom: '1em' }}>
           {processedParts}
-        </p>
+        </div>
       );
     });
   };

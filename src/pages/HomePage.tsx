@@ -94,9 +94,9 @@ const HomePage: React.FC = () => {
         <EnhancedText text="sona sin pi toki pona" isEnglish={false} />
       </h1>
       {loading ? (
-        <p><EnhancedText text="Loading stories..." isEnglish={true} /></p>
+        <div><EnhancedText text="Loading stories..." isEnglish={true} /></div>
       ) : error ? (
-        <p className="text-red-500"><EnhancedText text={error} isEnglish={true} /></p>
+        <div className="text-red-500"><EnhancedText text={error} isEnglish={true} /></div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
