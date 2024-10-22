@@ -78,11 +78,11 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
           const [latin, tokiPona] = content.split('|').map(s => s.trim());
           
           if (tokiPona) {
-            return isEnglish ? latin : wrapCartouche(`[${tokiPona}]`, settings.useUCSUR);
+            return isEnglish ? latin : wrapCartouche(`[${tokiPona}]`, settings.useUCSUR && settings.render !== 'latin');
           } else if (content.split(' ').every(word => isLegalTokiPonaWord(word))) {
-            return isEnglish ? content.slice(0, 4).toLowerCase() : wrapCartouche(part, settings.useUCSUR);
+            return isEnglish ? content.slice(0, 4).toLowerCase() : wrapCartouche(part, settings.useUCSUR && settings.render !== 'latin');
           } else {
-            return isEnglish ? content : wrapCartouche(`[${content.toUpperCase()}]`, settings.useUCSUR);
+            return isEnglish ? content : wrapCartouche(`[${content.toUpperCase()}]`, settings.useUCSUR && settings.render !== 'latin');
           }
         } else {
           const { text: processedPart } = renderText(part, isEnglish);
@@ -136,6 +136,7 @@ function isLegalTokiPonaWord(word: string): boolean {
 
 // Helper function to wrap text in UCSUR cartouche delimiters if needed
 function wrapCartouche(text: string, useUCSUR: boolean): string {
+  console.log(text, useUCSUR);
   if (useUCSUR) {
     return `${UCSUR_START_CARTOUCHE}${text.slice(1, -1)}${UCSUR_END_CARTOUCHE}`;
   }

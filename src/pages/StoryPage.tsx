@@ -63,9 +63,8 @@ const StoryPage: React.FC = () => {
         <EnhancedText text={story.title} />
       </h1>
       <p className="text-sm text-gray-600 mb-4">
-        <span>tan: jan Kolin</span>
-        {/* <EnhancedText text="tan:" isEnglish={false} />{" "} */}
-        {/* <EnhancedText text="HELLO" isEnglish={true} /> */}
+        <EnhancedText text="tan:" isEnglish={false} />{" "}
+        <EnhancedText text={story.author} isEnglish={false} />
       </p>
       <img
         src={getImageUrl(story.imageUrl)}
