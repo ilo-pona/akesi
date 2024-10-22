@@ -4,6 +4,9 @@ import WordHint from './WordHint';
 import { useTextRenderer } from '../hooks/useTextRenderer'
 import { tokiPonaDictionary } from '../data/tokiPonaDictionary';
 
+const UCSUR_START_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD90"`);
+const UCSUR_END_CARTOUCHE= JSON.parse(`"\\uDB86\\uDD91"`); 
+
 interface EnhancedTextProps {
   text: string;
   isEnglish?: boolean;
@@ -59,27 +62,39 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
   };
 
   const processText = (text: string, isEnglish: boolean) => {
-    const regex = /(\[.*?\]|\{.*?\})/g;
-    const parts = text.split(regex);
+    const paragraphs = text.split(/\n\s*\n/);
+    
+    return paragraphs.map((paragraph, paragraphIndex) => {
+      const regex = /(\[.*?\]|\{.*?\}|\n)/g;
+      const parts = paragraph.split(regex);
 
-    return parts.map((part, index) => {
-      if (part.startsWith('{') && part.endsWith('}')) {
-        return <LatinText key={index} text={part.slice(1, -1)} />;
-      } else if (part.startsWith('[') && part.endsWith(']')) {
-        const content = part.slice(1, -1);
-        const [latin, tokiPona] = content.split('|').map(s => s.trim());
-        
-        if (tokiPona) {
-          return isEnglish ? latin : `[${tokiPona}]`;
-        } else if (content.split(' ').every(word => isLegalTokiPonaWord(word))) {
-          return isEnglish ? content.slice(0, 4).toLowerCase() : part;
+      const processedParts = parts.map((part, index) => {
+        if (part === '\n') {
+          return <br key={`br-${paragraphIndex}-${index}`} />;
+        } else if (part.startsWith('{') && part.endsWith('}')) {
+          return <LatinText key={`latin-${paragraphIndex}-${index}`} text={part.slice(1, -1)} />;
+        } else if (part.startsWith('[') && part.endsWith(']')) {
+          const content = part.slice(1, -1);
+          const [latin, tokiPona] = content.split('|').map(s => s.trim());
+          
+          if (tokiPona) {
+            return isEnglish ? latin : wrapCartouche(`[${tokiPona}]`, settings.useUCSUR);
+          } else if (content.split(' ').every(word => isLegalTokiPonaWord(word))) {
+            return isEnglish ? content.slice(0, 4).toLowerCase() : wrapCartouche(part, settings.useUCSUR);
+          } else {
+            return isEnglish ? content : wrapCartouche(`[${content.toUpperCase()}]`, settings.useUCSUR);
+          }
         } else {
-          return isEnglish ? content : `[${content.toUpperCase()}]`;
+          const { text: processedPart } = renderText(part, isEnglish);
+          return processedPart;
         }
-      } else {
-        const { text: processedPart } = renderText(part, isEnglish);
-        return processedPart;
-      }
+      });
+
+      return (
+        <p key={`p-${paragraphIndex}`} style={{ marginBottom: '1em' }}>
+          {processedParts}
+        </p>
+      );
     });
   };
 
@@ -95,15 +110,14 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
     <span 
       style={{ 
         fontFamily: currentFont,
-        display: 'inline',
+        display: 'inline-block',
+        whiteSpace: 'pre-wrap',
       }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}
     >
-      {processedTextParts.map((part, index) => (
-        <React.Fragment key={index}>{part}</React.Fragment>
-      ))}
+      {processedTextParts}
       {settings.showHints && selectedWord && hintPosition && (
         <WordHint word={selectedWord} position={hintPosition} />
       )}
@@ -118,4 +132,12 @@ function isLegalTokiPonaWord(word: string): boolean {
   
   // Check if the word exists in the tokiPonaDictionary
   return tokiPonaDictionary.some(entry => entry.word === lowercaseWord);
+}
+
+// Helper function to wrap text in UCSUR cartouche delimiters if needed
+function wrapCartouche(text: string, useUCSUR: boolean): string {
+  if (useUCSUR) {
+    return `${UCSUR_START_CARTOUCHE}${text.slice(1, -1)}${UCSUR_END_CARTOUCHE}`;
+  }
+  return text;
 }
