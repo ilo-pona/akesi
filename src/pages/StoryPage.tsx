@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, Link, Navigate, useLocation } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
 import { EnhancedText } from "../components/EnhancedText";
 import { config } from "../config";
@@ -9,6 +9,7 @@ const StoryPage: React.FC = () => {
   const { stories } = useStories();
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -88,7 +89,10 @@ const StoryPage: React.FC = () => {
       <div className="prose prose-lg mb-8">
         <EnhancedText text={story.content} />
       </div>
-      <Link to="/" className="text-green-600 hover:underline">
+      <Link
+        to={location.state?.from || "/"}
+        className="text-green-600 hover:underline"
+      >
         <EnhancedText text="← o tawa tomo" isEnglish={false} />
       </Link>
     </div>

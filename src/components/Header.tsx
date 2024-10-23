@@ -12,13 +12,13 @@ const Header: React.FC<HeaderProps> = ({ openSettings }) => {
   return (
     <header className="bg-green-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/newest" className="text-2xl font-bold flex items-center">
+        <Link to="/" className="text-2xl font-bold flex items-center">
           <img src={logo} alt="Akesi Logo" className="h-8 w-8 mr-2" />
           Akesi
         </Link>
         <nav>
           <ul className="flex space-x-4 items-center text-2xl">
-            <li><Link to="/newest" className="hover:underline font-linja-pona">tomo</Link></li>
+            <li><Link to="/" className="hover:underline font-linja-pona">tomo</Link></li>
             <li><Link to="/about" className="hover:underline font-linja-pona">seme</Link></li>
             <li>
               <button

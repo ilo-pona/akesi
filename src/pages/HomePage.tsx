@@ -4,7 +4,7 @@ import { EnhancedText } from "../components/EnhancedText";
 import { useSettings } from "../contexts/SettingsContext";
 import { Story } from "../types/Story";
 import { config } from "../config";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
 
 const STORIES_PER_PAGE = 4;
@@ -21,12 +21,16 @@ const HomePage: React.FC = () => {
   const [hasNewerStories, setHasNewerStories] = useState(false);
   const { stories: cachedStories, setStories: setCachedStories } = useStories();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { page } = useParams<{ page?: string }>();
 
   useEffect(() => {
-  }, []);
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    setCurrentPage(pageNumber);
+  }, [page]);
 
   useEffect(() => {
-    if (location.pathname === "/newest") {
+    if (location.pathname === "/") {
       setCurrentPage(1);
     }
   }, [location]);
@@ -104,12 +108,16 @@ const HomePage: React.FC = () => {
 
   const handleOlderStories = () => {
     if (hasOlderStories) {
-      setCurrentPage((prevPage) => prevPage + 1);
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      navigate(`/page/${newPage}`);
     }
   };
 
   const handleNewerStories = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
+    const newPage = currentPage - 1;
+    setCurrentPage(newPage);
+    navigate(newPage === 1 ? "/" : `/page/${newPage}`);
   };
 
   return (

@@ -39,13 +39,10 @@ function AppContent() {
         <Header openSettings={openSettings} />
         <main className="flex-grow container mx-auto px-4 py-8">
           <Routes>
-            <Route path="/newest" element={<HomePage renderText={renderText} />} />
-            <Route path="/" element={<Navigate to="/newest" replace />} />
-            <Route 
-              path="/story/:id" 
-              element={<StoryPage renderText={renderText} />} 
-            />
-            <Route path="/about" element={<AboutPage renderText={renderText} />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/page/:page" element={<HomePage />} />
+            <Route path="/story/:id" element={<StoryPage />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </main>
         <Footer />

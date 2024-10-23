@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSettings } from '../contexts/SettingsContext';
 import { Story } from '../types/Story';
 import { EnhancedText } from './EnhancedText';
@@ -10,6 +10,7 @@ interface StoryCardProps {
 
 const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
   const { settings } = useSettings();
+  const location = useLocation();
 
   const getFontClass = () => {
     switch (settings.font) {
@@ -26,11 +27,17 @@ const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
 
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden ${getFontClass()}`}>
-      <Link to={`/story/${story.id}`}>
+      <Link
+        to={`/story/${story.id}`}
+        state={{ from: location.pathname }}
+      >
         <img src={story.imageUrl} alt={story.title} className="w-full h-48 object-cover hover:opacity-80 transition-opacity" />
       </Link>
       <div className="p-4">
-        <Link to={`/story/${story.id}`}>
+        <Link
+          to={`/story/${story.id}`}
+          state={{ from: location.pathname }}
+        >
           <h2 className="text-xl font-semibold mb-2 hover:text-green-600 transition-colors">
             <EnhancedText text={story.title} />
           </h2>
