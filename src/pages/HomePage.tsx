@@ -23,6 +23,9 @@ const HomePage: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
+  }, []);
+
+  useEffect(() => {
     if (location.pathname === "/newest") {
       setCurrentPage(1);
     }
@@ -55,10 +58,20 @@ const HomePage: React.FC = () => {
           .map(id => newStories.find(s => s.id === id)!);
         return uniqueStories;
       });
-      setCachedStories({ data: processedData, timestamp: Date.now() });
-      setHasOlderStories(data.length === STORIES_PER_PAGE * PAGES_TO_FETCH);
-      setHasNewerStories(currentPage > 1);
+      
+      setCachedStories(prevCachedStories => {
+        const newData = prevCachedStories ? [...prevCachedStories.data, ...processedData] : processedData;
+        const uniqueData = Array.from(new Set(newData.map(s => s.id)))
+          .map(id => newData.find(s => s.id === id)!);
+        return { data: uniqueData, timestamp: Date.now() };
+      });
+
+      const newHasOlderStories = data.length === STORIES_PER_PAGE * PAGES_TO_FETCH;
+      const newHasNewerStories = currentPage > 1;
+      setHasOlderStories(newHasOlderStories);
+      setHasNewerStories(newHasNewerStories);
       setLoading(false);
+      
     } catch (err) {
       setError("Error fetching stories. Please try again later.");
       setLoading(false);
@@ -67,27 +80,27 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const currentTime = Date.now();
-    if (
-      cachedStories &&
-      cachedStories.data.length > 0 &&
-      currentTime - cachedStories.timestamp < CACHE_DURATION &&
-      cachedStories.data.length >= currentPage * STORIES_PER_PAGE
-    ) {
-      // Use cached stories if they exist, are not expired, and have enough data for the current page
+    const shouldFetchNewStories = !cachedStories ||
+      cachedStories.data.length === 0 ||
+      currentTime - cachedStories.timestamp >= CACHE_DURATION;
+      //  ||
+      // cachedStories.data.length < currentPage * STORIES_PER_PAGE;
+
+    if (shouldFetchNewStories) {
+      fetchStories();
+    } else {
       setStories(cachedStories.data);
       setHasOlderStories(cachedStories.data.length > currentPage * STORIES_PER_PAGE);
       setHasNewerStories(currentPage > 1);
       setLoading(false);
-    } else {
-      // Fetch new stories if cache is empty, expired, or doesn't have enough data
-      fetchStories();
     }
-  }, [currentPage, cachedStories, fetchStories]);
+  }, [currentPage, fetchStories, cachedStories]);
 
   const currentStories = stories.slice(
     (currentPage - 1) * STORIES_PER_PAGE,
     currentPage * STORIES_PER_PAGE
   );
+
 
   const handleOlderStories = () => {
     if (hasOlderStories) {
@@ -119,22 +132,28 @@ const HomePage: React.FC = () => {
             ))}
           </div>
           <div className="flex justify-center space-x-4 mt-8">
-            {hasNewerStories && (
-              <button
-                onClick={handleNewerStories}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                <EnhancedText text="lipu sin" isEnglish={false} />
-              </button>
-            )}
-            {hasOlderStories && (
-              <button
-                onClick={handleOlderStories}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                <EnhancedText text="lipu pini" isEnglish={false} />
-              </button>
-            )}
+            <button
+              onClick={hasNewerStories ? handleNewerStories : undefined}
+              className={`px-4 py-2 rounded ${
+                hasNewerStories
+                  ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              disabled={!hasNewerStories}
+            >
+              <EnhancedText text="lipu sin" isEnglish={false} />
+            </button>
+            <button
+              onClick={hasOlderStories ? handleOlderStories : undefined}
+              className={`px-4 py-2 rounded ${
+                hasOlderStories
+                  ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              disabled={!hasOlderStories}
+            >
+              <EnhancedText text="lipu pini" isEnglish={false} />
+            </button>
           </div>
         </>
       )}
