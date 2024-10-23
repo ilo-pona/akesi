@@ -77,7 +77,10 @@ const StoryPage: React.FC = () => {
       />
       <div className="mb-4 text-gray-600">
         <div>
-          <EnhancedText text={`tenpo: {${story.date}}`} isEnglish={false} />
+          <EnhancedText
+            text={`tenpo: {${story.date.substring(0, 10)}}`}
+            isEnglish={false}
+          />
         </div>
         <a
           href={story.originalLink}
