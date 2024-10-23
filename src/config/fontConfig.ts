@@ -14,9 +14,9 @@ export const fontOptions: FontOption[] = [
     value: "nasin-nanpa",
     label: "nasin nanpa",
     ucsurCompatible: true,
-    asciiCompatible: false,
+    asciiCompatible: true,
     englishCompatible: false,
-    url: "nasin-nanpa-4.0.1-UCSUR.otf",
+    url: "nasin-nanpa-4.0.1.otf",
     creator: "ETBCOR",
     link: "https://github.com/ETBCOR/nasin-nanpa",
   },
@@ -82,7 +82,7 @@ export const fontOptions: FontOption[] = [
   },
 ];
 
-export const defaultAsciiFont = "linja pona";
+export const defaultAsciiFont = "nasin-nanpa";
 export const defaultUcsurFont = "nasin-nanpa";
 export const defaultEnglishFont = "sans_serif";
 

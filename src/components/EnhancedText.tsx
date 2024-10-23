@@ -20,7 +20,7 @@ const LatinText: React.FC<{ text: string }> = ({ text }) => (
 export const EnhancedText: React.FC<EnhancedTextProps> = ({ 
   text, 
   isEnglish = false, 
-  removeExtraSpace = false // Default to false for backward compatibility
+  removeExtraSpace = false
 }) => {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
@@ -95,7 +95,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
         }
       });
 
-      // Remove extra space at the end if removeExtraSpace is true
       if (removeExtraSpace) {
         const lastPart = processedParts[processedParts.length - 1];
         if (typeof lastPart === 'string') {
@@ -103,18 +102,13 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
         }
       }
 
-      return (
-        <span key={`p-${paragraphIndex}`} style={{ display: 'inline-block' }}>
-          {processedParts}
-        </span>
-      );
+      return processedParts;
     });
   };
 
   const { fontFamily } = renderText('', isEnglish);
   const processedTextParts = processText(text, isEnglish);
 
-  // Determine which font to use based on isEnglish and the current render mode
   const currentFont = isEnglish || settings.render === 'latin'
     ? 'sans-serif'
     : settings.sitelenPonaFont;
@@ -123,14 +117,22 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     <span 
       style={{ 
         fontFamily: currentFont,
-        display: 'inline-block',
         whiteSpace: removeExtraSpace ? 'normal' : 'pre-wrap',
+        display: 'inline-block', // This ensures inline behavior while allowing block properties
       }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}
     >
-      {processedTextParts}
+      {processedTextParts.length === 1 ? (
+        processedTextParts[0]
+      ) : (
+        processedTextParts.map((paragraph, index) => (
+          <p key={`p-${index}`} style={{ margin: '0.5em 0' }}>
+            {paragraph}
+          </p>
+        ))
+      )}
       {settings.showHints && selectedWord && hintPosition && (
         <WordHint word={selectedWord} position={hintPosition} />
       )}
