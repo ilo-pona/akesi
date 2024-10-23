@@ -82,7 +82,7 @@ export const fontOptions: FontOption[] = [
   },
 ];
 
-export const defaultAsciiFont = "nasin-nanpa";
+export const defaultAsciiFont = "linja pona";
 export const defaultUcsurFont = "nasin-nanpa";
 export const defaultEnglishFont = "sans_serif";
 
