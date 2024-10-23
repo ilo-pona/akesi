@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { useSettings } from '../contexts/SettingsContext';
-import WordHint from './WordHint';
-import { useTextRenderer } from '../hooks/useTextRenderer'
-import { tokiPonaDictionary } from '../data/tokiPonaDictionary';
+import React, { useState, useCallback } from "react";
+import { useSettings } from "../contexts/SettingsContext";
+import WordHint from "./WordHint";
+import { useTextRenderer } from "../hooks/useTextRenderer";
+import { tokiPonaDictionary } from "../data/tokiPonaDictionary";
 
 const UCSUR_START_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD90"`);
-const UCSUR_END_CARTOUCHE= JSON.parse(`"\\uDB86\\uDD91"`); 
+const UCSUR_END_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD91"`);
 
 interface EnhancedTextProps {
   text: string;
@@ -14,16 +14,19 @@ interface EnhancedTextProps {
 }
 
 const LatinText: React.FC<{ text: string }> = ({ text }) => (
-  <span style={{ fontFamily: 'sans-serif' }}>{text}</span>
+  <span style={{ fontFamily: "sans-serif" }}>{text}</span>
 );
 
-export const EnhancedText: React.FC<EnhancedTextProps> = ({ 
-  text, 
-  isEnglish = false, 
-  removeExtraSpace = false
+export const EnhancedText: React.FC<EnhancedTextProps> = ({
+  text,
+  isEnglish = false,
+  removeExtraSpace = false, // Default to false for backward compatibility
 }) => {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
-  const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
+  const [hintPosition, setHintPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const { settings } = useSettings();
   const renderText = useTextRenderer();
 
@@ -31,7 +34,10 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     (event: React.MouseEvent<HTMLSpanElement>) => {
       if (!settings.showHints) return;
 
-      const range = document.caretPositionFromPoint(event.clientX, event.clientY);
+      const range = document.caretPositionFromPoint(
+        event.clientX,
+        event.clientY
+      );
       if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
         const text = range.offsetNode.textContent || "";
         const word = getWordAtPoint(text, range.offset);
@@ -68,26 +74,52 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 
   const processText = (text: string, isEnglish: boolean) => {
     const paragraphs = text.split(/\n\s*\n/);
-    
+
     return paragraphs.map((paragraph, paragraphIndex) => {
+      const updatedParagraph = paragraph.replace(
+        /\b(?!\[)[A-Z][A-Za-z]*(?!\])\b/g,
+        (match) => `[${match}]`
+      );
       const regex = /(\[.*?\]|\{.*?\}|\n)/g;
-      const parts = paragraph.split(regex);
+      const parts = updatedParagraph.split(regex);
 
       const processedParts = parts.map((part, index) => {
-        if (part === '\n') {
+        if (part === "\n") {
           return <br key={`br-${paragraphIndex}-${index}`} />;
-        } else if (part.startsWith('{') && part.endsWith('}')) {
-          return <LatinText key={`latin-${paragraphIndex}-${index}`} text={part.slice(1, -1)} />;
-        } else if (part.startsWith('[') && part.endsWith(']')) {
+        } else if (part.startsWith("{") && part.endsWith("}")) {
+          return (
+            <LatinText
+              key={`latin-${paragraphIndex}-${index}`}
+              text={part.slice(1, -1)}
+            />
+          );
+        } else if (part.startsWith("[") && part.endsWith("]")) {
           const content = part.slice(1, -1);
-          const [latin, tokiPona] = content.split('|').map(s => s.trim());
-          
+          const [latin, tokiPona] = content.split("|").map((s) => s.trim());
+
           if (tokiPona) {
-            return isEnglish ? latin : wrapCartouche(`[${tokiPona}]`, settings.useUCSUR && settings.render !== 'latin');
-          } else if (content.split(' ').every(word => isLegalTokiPonaWord(word))) {
-            return isEnglish ? content.slice(0, 4).toLowerCase() : wrapCartouche(part, settings.useUCSUR && settings.render !== 'latin');
+            return isEnglish || settings.render === "latin"
+              ? latin
+              : wrapCartouche(
+                  `[${tokiPona.toUpperCase()}]`,
+                  settings.useUCSUR && settings.render !== "latin"
+                );
+          } else if (
+            content.split(" ").every((word) => isLegalTokiPonaWord(word))
+          ) {
+            return isEnglish || settings.render === "latin"
+              ? content
+              : wrapCartouche(
+                  `[${content.toUpperCase()}]`,
+                  settings.useUCSUR && settings.render !== "latin"
+                );
           } else {
-            return isEnglish ? content : wrapCartouche(`[${content.toUpperCase()}]`, settings.useUCSUR && settings.render !== 'latin');
+            return isEnglish || settings.render === "latin"
+              ? content
+              : wrapCartouche(
+                  `[${content.toUpperCase()}]`,
+                  settings.useUCSUR && settings.render !== "latin"
+                );
           }
         } else {
           const { text: processedPart } = renderText(part, isEnglish);
@@ -95,48 +127,46 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
         }
       });
 
+      // Remove extra space at the end if removeExtraSpace is true
       if (removeExtraSpace) {
         const lastPart = processedParts[processedParts.length - 1];
-        if (typeof lastPart === 'string') {
+        if (typeof lastPart === "string") {
           processedParts[processedParts.length - 1] = lastPart.trimEnd();
         }
       }
 
-      return processedParts;
+      return (
+        <p key={`p-${paragraphIndex}`} style={{ margin: "0.5em 0" }}>
+          {processedParts}
+        </p>
+      );
     });
   };
 
-  const { fontFamily } = renderText('', isEnglish);
+  const { fontFamily } = renderText("", isEnglish);
   const processedTextParts = processText(text, isEnglish);
 
-  const currentFont = isEnglish || settings.render === 'latin'
-    ? 'sans-serif'
-    : settings.sitelenPonaFont;
+  // Determine which font to use based on isEnglish and the current render mode
+  const currentFont =
+    isEnglish || settings.render === "latin"
+      ? "sans-serif"
+      : settings.sitelenPonaFont;
 
   return (
-    <span 
-      style={{ 
+    <div
+      style={{
         fontFamily: currentFont,
-        whiteSpace: removeExtraSpace ? 'normal' : 'pre-wrap',
-        display: 'inline-block', // This ensures inline behavior while allowing block properties
+        whiteSpace: removeExtraSpace ? "normal" : "pre-wrap",
       }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}
     >
-      {processedTextParts.length === 1 ? (
-        processedTextParts[0]
-      ) : (
-        processedTextParts.map((paragraph, index) => (
-          <p key={`p-${index}`} style={{ margin: '0.5em 0' }}>
-            {paragraph}
-          </p>
-        ))
-      )}
+      {processedTextParts}
       {settings.showHints && selectedWord && hintPosition && (
         <WordHint word={selectedWord} position={hintPosition} />
       )}
-    </span>
+    </div>
   );
 };
 
@@ -144,9 +174,9 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 function isLegalTokiPonaWord(word: string): boolean {
   // Convert the word to lowercase for case-insensitive comparison
   const lowercaseWord = word.toLowerCase();
-  
+
   // Check if the word exists in the tokiPonaDictionary
-  return tokiPonaDictionary.some(entry => entry.word === lowercaseWord);
+  return tokiPonaDictionary.some((entry) => entry.word === lowercaseWord);
 }
 
 // Helper function to wrap text in UCSUR cartouche delimiters if needed
