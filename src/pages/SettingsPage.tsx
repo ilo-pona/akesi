@@ -131,6 +131,17 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
               />
             </div>
           </div>
+
+          {/* Add keyboard shortcuts description */}
+          <div className="mt-8 border-t pt-6">
+            <h2 className="text-xl font-semibold mb-4">Keyboard Shortcuts</h2>
+            <ul className="list-disc list-inside">
+              <li><strong>\</strong> - Toggle between Latin and sitelen pona</li>
+              <li><strong>u</strong> - Toggle UCSUR</li>
+              <li><strong>[</strong> and <strong>]</strong> - Cycle through fonts</li>
+              <li><strong>?</strong> - Toggle hints</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

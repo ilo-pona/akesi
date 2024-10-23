@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -14,7 +14,7 @@ import { convertToUCSUR } from "./utils/ucsurConverter";
 
 function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
 
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
@@ -31,6 +31,42 @@ function AppContent() {
     
     return <span style={{ fontFamily: getFontFamily(settings.sitelenPonaFont) }}>{processedText}</span>;
   }, [settings.render, settings.useUCSUR, settings.sitelenPonaFont]);
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    switch (event.key) {
+      case '\\':
+        updateSettings({ render: settings.render === 'latin' ? 'sitelen_pona' : 'latin' });
+        break;
+      case 'u':
+        updateSettings({ useUCSUR: !settings.useUCSUR });
+        break;
+      case '[':
+        cycleFont(-1);
+        break;
+      case ']':
+        cycleFont(1);
+        break;
+      case '?':
+        updateSettings({ showHints: !settings.showHints });
+        break;
+      default:
+        break;
+    }
+  }, [settings, updateSettings]);
+
+  const cycleFont = (direction: number) => {
+    const fonts = ['nasin-nanpa', 'Fairfax Pona HD', 'linja pona', 'sitelen-pona', 'nasin-sitelen-pu', 'sitelen seli kiwen asuki'];
+    const currentIndex = fonts.indexOf(settings.sitelenPonaFont);
+    const newIndex = (currentIndex + direction + fonts.length) % fonts.length;
+    updateSettings({ sitelenPonaFont: fonts[newIndex] });
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <Router>

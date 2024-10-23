@@ -78,6 +78,15 @@ const AboutPage: React.FC = () => {
             </a>
             .
           </p>
+          <p className="mb-4">
+            <strong>Keyboard Shortcuts:</strong>
+            <ul className="list-disc list-inside">
+              <li><strong>\</strong> - Toggle between Latin and sitelen pona</li>
+              <li><strong>u</strong> - Toggle UCSUR</li>
+              <li><strong>[</strong> and <strong>]</strong> - Cycle through fonts</li>
+              <li><strong>?</strong> - Toggle hints</li>
+            </ul>
+          </p>
         </div>
       </div>
       <div className="mt-12">
