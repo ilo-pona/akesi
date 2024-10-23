@@ -64,8 +64,11 @@ const StoryPage: React.FC = () => {
         <EnhancedText text={story.title} />
       </h1>
       <div className="text-sm text-gray-600 mb-4">
-        <EnhancedText text="tan:" isEnglish={false} />{" "}
-        <EnhancedText text={story.author} isEnglish={false} />
+        <EnhancedText
+          text={`tan: ${story.author}`}
+          isEnglish={false}
+          removeExtraSpace={true}
+        />
       </div>
       <img
         src={getImageUrl(story.imageUrl)}
@@ -74,8 +77,7 @@ const StoryPage: React.FC = () => {
       />
       <div className="mb-4 text-gray-600">
         <div>
-          <EnhancedText text="tenpo:" isEnglish={false} />{" "}
-          <EnhancedText text={story.date} isEnglish={true} />
+          <EnhancedText text={`tenpo: {${story.date}}`} isEnglish={false} />
         </div>
         <a
           href={story.originalLink}
