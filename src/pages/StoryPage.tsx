@@ -73,7 +73,7 @@ const StoryPage: React.FC = () => {
       <img
         src={getImageUrl(story.imageUrl)}
         alt={story.title}
-        className="w-full h-64 object-cover mb-6 rounded-lg"
+        className="w-full max-h-96 object-contain mb-6 rounded-lg"
       />
       <div className="mb-4 text-gray-600">
         <div>
