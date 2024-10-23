@@ -1,0 +1,43 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'  
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+    - name: Add server to known hosts
+      run: ssh-keyscan -H akesi.site >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      env:
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+      run: |
+        rsync -avz --delete dist/* $SERVER_USER@akesi.site:akesi/app/
+        rsync -avz fonts/* $SERVER_USER@akesi.site:akesi/fonts/
+        scp deploy/docker-compose.yaml $SERVER_USER@akesi.site:.
+        scp deploy/nginx.conf $SERVER_USER@akesi.site:.
+        ssh $SERVER_USER@akesi.site "docker compose down && docker compose up -d --build"
+

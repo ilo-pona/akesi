@@ -10,13 +10,18 @@ const UCSUR_END_CARTOUCHE= JSON.parse(`"\\uDB86\\uDD91"`);
 interface EnhancedTextProps {
   text: string;
   isEnglish?: boolean;
+  removeExtraSpace?: boolean; // New prop
 }
 
 const LatinText: React.FC<{ text: string }> = ({ text }) => (
   <span style={{ fontFamily: 'sans-serif' }}>{text}</span>
 );
 
-export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = false }) => {
+export const EnhancedText: React.FC<EnhancedTextProps> = ({ 
+  text, 
+  isEnglish = false, 
+  removeExtraSpace = false // Default to false for backward compatibility
+}) => {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [hintPosition, setHintPosition] = useState<{ x: number; y: number } | null>(null);
   const { settings } = useSettings();
@@ -90,10 +95,18 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
         }
       });
 
+      // Remove extra space at the end if removeExtraSpace is true
+      if (removeExtraSpace) {
+        const lastPart = processedParts[processedParts.length - 1];
+        if (typeof lastPart === 'string') {
+          processedParts[processedParts.length - 1] = lastPart.trimEnd();
+        }
+      }
+
       return (
-        <div key={`p-${paragraphIndex}`} style={{ marginBottom: '1em' }}>
+        <span key={`p-${paragraphIndex}`} style={{ display: 'inline-block' }}>
           {processedParts}
-        </div>
+        </span>
       );
     });
   };
@@ -111,7 +124,7 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({ text, isEnglish = fa
       style={{ 
         fontFamily: currentFont,
         display: 'inline-block',
-        whiteSpace: 'pre-wrap',
+        whiteSpace: removeExtraSpace ? 'normal' : 'pre-wrap',
       }}
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}

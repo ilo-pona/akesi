@@ -2,57 +2,133 @@
   {
     "title": "pona sin li kama lon ma tomo",
     "summary": "ma tomo li jo e pona sin. jan ale li pilin pona.",
-    "content": "ma tomo Akesi li jo e pona sin. jan mute li pali e tomo pona pi telo nasa ala. jan lili li ken musi lon ni. jan ale li pilin pona tan ni: ona li ken tawa lon ma pona ni. ni li pona tawa ma tomo en jan ale.",
-    "imageUrl": "https://images.unsplash.com/photo-1518744826297-1c3b3edf6c96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-15",
-    "originalLink": "https://example.com/news/1"
+    "content": "ma tomo Akesi li ijo sin. lon ni la kulupu li ken kama sona e toki pona. jan ale li pilin pona tan ni.",
+    "imageUrl": "fa46e324-a773-4fb1-b237-d562221a0ccd.png",
+    "date": "2024-10-14T12:00:00",
+    "originalLink": "http://akesi.site",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "kala sin li lon telo suli",
-    "summary": "jan pi sona mute li lukin e kala sin lon telo suli.",
-    "content": "jan pi sona mute li lukin e kala sin lon telo suli. kala ni li pona lukin li suli. ona li lon poka pi ma Akesi. jan ale li pilin pona tan ni: kala ni li pona tawa ma. ni li pona tawa sona pi ma ale.",
-    "imageUrl": "https://images.unsplash.com/photo-1518732714860-b62714ce0c59?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-14",
-    "originalLink": "https://example.com/news/2"
+    "title": "jan [Mikelanselo]",
+    "summary": "jan [Mikelanselo] li jan pi pali kiwen en sitelen kule.",
+    "content": "jan [Mikelanselo] (toki {Italija}: {Michelangelo di Lodovico Buonarroti Simoni}) li kama sin lon tenpo sike nanpa 1475, li moli lon tenpo sike nanpa 1564. \n\n ona li jan musi, li jan pi pali kiwen, li jan pi sitelen kule, li jan pi sona pi pali tomo, li jan pi musi toki. \n\n ona li kama tan ma tomo lawa [Pilense] ({Repubblica di Firenze}), li lawa mute e musi pi ma pi poka suno pini. pali ona li wawa li suli tawa tenpo pini ni. jan [Lejonato] pi ma [Winsi] taso li suli sama ni. jan mute li sona mute e sitelen kule ona, e kiwen musi ona, e tomo pali ona. jan [Mikelanselo] li musi mute, li toki mute kepeken lipu tawa jan ante, li pali mute e sitelen pi pini ala, li pana mute e pilin ona lon sitelen la, ona li jan musi nanpa wan lon tenpo ona tawa sona pi jan sona.",
+
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/02/Michelangelo_Daniele_da_Volterra_%28dettaglio%29.jpg",
+    "date": "2024-10-14T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/jan_Mikelanselo",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "ma kasi sin li open",
-    "summary": "ma tomo li jo e ma kasi sin. jan ale li ken tawa lon ona.",
-    "content": "ma tomo Akesi li open e ma kasi sin. ma ni li suli li jo e kasi mute e telo suli. jan ale li ken tawa lon ona li ken musi lon ona. ni li pona tawa pilin pi jan ale li pona tawa ma.",
-    "imageUrl": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-13",
-    "originalLink": "https://example.com/news/3"
+    "title": "kalama musi [Intenasijonale]",
+    "summary": "kalama musi [Intenasijonale] (toki {Kanse}: {L'Internationale}) li kalama musi toki suli.",
+    "content": "kalama musi pona [Intenasijonale] (toki {Kanse}: {L'Internationale}) li kalama musi toki suli. pilin jan la, ona li kalama musi lawa pi nasin kulupu (nasin lawa) en nasin pi kulupu jo. toki ona li sitelen lon tenpo sike 1871. taso, kalama ona li sitelen lon tenpo sike 1888. open la, ona li lon toki Kanse. nimi ona li kama tan e kulupu pi jan pali lon ma ali, anu \"kulupu Intenasijonale nanpa wan\". ona li kulupu suli pi jan pali tan tenpo sike 1864.\n\njan li ante toki e kalama musi Intenasijonale tawa toki mute. wan ni li toki pona.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/L%27Internationale.jpg",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/kalama_musi_Intenasijonale",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "tomo sona sin li open",
-    "summary": "ma tomo li jo e tomo sona sin. jan lili mute li ken kama sona lon ona.",
-    "content": "tomo sona sin li open lon ma tomo Akesi. tomo ni li suli li pona lukin. jan lili mute li ken kama sona lon ona. jan pi pana sona li pona mute. ni li pona tawa jan lili en jan ale pi ma tomo.",
-    "imageUrl": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-12",
-    "originalLink": "https://example.com/news/4"
+    "title": "jan nanpa wan pi ma Oselija",
+    "summary": "tenpo sike 65,000 pini la, jan nanpa wan pi ma Oselija jan nanpa wan li kama tan ma Asija.",
+    "content": "jan nanpa wan pi ma Oselija\n tenpo sike 65,000 pini la, jan nanpa wan pi ma Oselija jan nanpa wan li kama tan ma Asija. ona li jo e ma mute e toki mute. ona li pali e ilo alasa mute li alasa e soweli e kala e waso e kasi. palisa alasa en palisa tawa kama li ni. jan nanpa wan ni li pali ala e tomo suli. kin la ona li tawa kepeken kulupu lili.\n\ntenpo sike 2500 pini (nanpa li ken mute) la kulupu jan pi ma telo Towe kulupu jan li tawa ma telo Towe tan ma Intonesija. ma telo ni li lon poka pi ma Kinlan li ma linja wan lon tenpo pini la jan li ken tawa lon ona. ona li toki tawa jan nanpa wan ante la toki wan ona li jo e nimi mute sama. ona li pali e ilo telo tawa li tawa mute lon telo.\n\njan kama pi ma Elopa\n tenpo sike nanpa 1606 la, jan pi ma Netelan li lukin tawa ma Oselija. ona li sitelen e ma selo mute, li pana e nimi . taso, ona li lon ala e tomo. pi ma Inli li sitelen e ma selo mute kin lon tenpo sike nanpa 1770. ona li pana e nimi tawa ma selo ni. ona li toki e ni: jan ala li lawa e ma ni la ma Inli li jo e ma selo ni. tenpo sike nanpa 1788 la, ma Inli li weka e jan ike e jan pakala tawa ma Niju Sato Welu. jan pi ma Inli li utala li moli li lawa e jan nanpa wan. ona li lanpan e jan lili tan mama pi jan nanpa wan. tenpo ni la, ni li awen, taso ni li pana kin e pilin ike tawa jan nanpa wan pi tenpo ni. ona li pana e nimi \"kulupu jan lanpan\" tawa jan nanpa wan tan ijo tenpo ni. tenpo ni la kulupu nanpa wan mute li weka anu lon ala. nasin mute ona en toki ona li lon ala. lon poka telo la ni li lon. ale ni li tan utala jan pi ma Elopa. ona li ante e ma li pali e tomo li tawa weka e jan li toki e ni: sina o toki ala e toki sina lon ma mi. toki mute ni li kama lon li kama wawa lon tenpo ni.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Kangaroo_Australia_01_11_2008_-_retouch.JPG/512px-Kangaroo_Australia_01_11_2008_-_retouch.JPG?20090215010405=",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/ma_Oselija",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "musi suli li kama",
-    "summary": "musi suli li kama lon ma tomo. jan ale li ken lukin e ona.",
-    "content": "musi suli li kama lon ma tomo Akesi. jan mute tan ma ante li kama. ona li pali e kalama musi e musi suli. jan ale li ken kama li ken lukin e musi ni. ni li pona mute tawa jan ale pi ma tomo.",
-    "imageUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-11",
-    "originalLink": "https://example.com/news/5"
+    "title": "lipu \"Wikipedia\" anu lipu Wikipesija",
+    "summary": "lipu \"Wikipedia\" anu lipu Wikipesija li ilo li lipu sona suli.",
+    "content": "lipu \"Wikipedia\" anu lipu Wikipesija li ilo li lipu sona suli. ona li open lon tenpo sike nanpa 2001.\n\nona la jan mute li ken pana e lipu sona pi ijo ale. nasin ona la jan ale li ken pali e lipu li ken ante e lipu. ni li nasin Wiki. ona li lipu ante pi nasin Wiki. jan mute pi ma ale li kepeken lipu Wikipesija.\n\ntenpo pini\n\ntenpo sike nanpa 2001 la lipu Wikipedia li kama lon. tenpo ni la, kulupu Bomis li jo e ni. lipu ni li sama lipu Nupedia, li lipu sona pi jan sona.\n\ntenpo sike nanpa 2003 la kulupu jan Wikimesija li kama lon.\n\nlipu Wikipedia pi toki pona\n\nlipu Wikipedia li lon toki ante mute. taso ona li lon ala toki pona lon tenpo ni. tenpo pini la lipu \"Wikipedia\" li jo e ante lili pi toki pona. taso tenpo sike nanpa nanpa 2005 la ona li weka tan ni: jan pi mute lili li pali e ona. jan li pali e ante sin lon lipu Panton (Fandom).\n\nlipu Wikipesija\n\nkulupu li pali e lipu Wikipesija tawa ni: ona li wile kama e lipu \"Wikipedia\" sin pi toki pona. kulupu lawa pi lipu Panton ale li ante e nasin ona li lawa e lipu ale. tenpo sike nanpa nanpa 2021 la lipu Wikipesija pi toki pona li kama tawa e nasin lipu wikipesija.org.[1] lipu ni la jan sitelen li anpa ala tawa jan lawa pi lipu Panton.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/langtok-300px-Wikipedia-logo-v2.svg.png",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/lipu_Wikipedia",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "jan pali li pona e nasin tawa",
-    "summary": "jan pali li pona e nasin tawa lon ma tomo. ni li pona tawa jan ale.",
-    "content": "jan pali li pona e nasin tawa lon ma tomo Akesi. ona li pali lon tenpo suli. jan ale li ken tawa pona lon nasin ni. ni li pona tawa jan ale pi ma tomo. jan li pilin pona tan ni: ona li ken tawa kepeken nasin pona.",
-    "imageUrl": "https://images.unsplash.com/photo-1465447142348-e9952c393450?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-10",
-    "originalLink": "https://example.com/news/6"
+    "title": "waso kule",
+    "summary": "waso kule, anu waso toki anu waso Psittacidae. ona li waso.",
+    "content": "waso kule, anu waso toki anu waso Psittacidae. ona li waso.\n\nsona\n\nwaso ni li kule mute tawa lukin. ona li jo e uta wawa pimeja. ona li sona mute, tan ni la ona li toki.\n\nona mute li lon ma Pasila, taso ona li lon ma ale.\n\nona li toki mute li kalama mute.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Ara_ararauna_-Jurong_Bird_Park%2C_Singapore-8.jpg",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/waso_kule",
+    "public": true,
+    "author": "jan Kolin"
   },
   {
-    "title": "kasi kule li open lon ma ale",
-    "summary": "kasi kule mute li open lon ma ale. jan ale li pilin pona tan ni.",
-    "content": "kasi kule mute li open lon ma ale pi ma tomo Akesi. ni li pana e pona lukin tawa ma tomo. jan ale li pilin pona tan ni: ona li lukin e kasi kule ni. jan mute li tawa lon ma tomo li lukin e kasi ni.",
-    "imageUrl": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    "date": "2024-03-09",
-    "originalLink": "https://example.com/news/7"
+    "title": "musi utala Olinpi",
+    "summary": "musi utala Olinpi li musi utala suli mute pi musi sijelo.",
+    "content": "musi utala Olinpi (Olympics) li musi utala suli mute pi musi sijelo. Ona li musi utala nanpa wan pi musi sijelo lon ma ali. jan pi musi sijelo tan ma mute li utala musi e jan ante. Ona li lon kulupu pona pi jan tan ma sama ona. musi sijelo mute li lon musi utala Olinpi. musi utala Olinpo ante li lon tenpo seli li lon tenpo lete. jan lon ma Elena majuna li open e musi utala Olinpo pi tenpo pini. Kulupu IOC li kama li pali e musi utala lon ma tomo Asina. tenpo ni la, ma pi musi Olinpi ante li lon ma tomo mute ante.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Olympic_rings_without_rims.svg/langtok-300px-Olympic_rings_without_rims.svg.png",
+    "date": "2024-10-14T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/musi_utala_Olinpi",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "jan [Mikelanselo]",
+    "summary": "jan [Mikelanselo] li jan pi pali kiwen en sitelen kule.",
+    "content": "jan [Mikelanselo] (toki {Italija}: {Michelangelo di Lodovico Buonarroti Simoni}) li kama sin lon tenpo sike nanpa 1475, li moli lon tenpo sike nanpa 1564. \n\n ona li jan musi, li jan pi pali kiwen, li jan pi sitelen kule, li jan pi sona pi pali tomo, li jan pi musi toki. \n\n ona li kama tan ma tomo lawa [Pilense] ({Repubblica di Firenze}), li lawa mute e musi pi ma pi poka suno pini. pali ona li wawa li suli tawa tenpo pini ni. jan [Lejonato] pi ma [Winsi] taso li suli sama ni. jan mute li sona mute e sitelen kule ona, e kiwen musi ona, e tomo pali ona. jan [Mikelanselo] li musi mute, li toki mute kepeken lipu tawa jan ante, li pali mute e sitelen pi pini ala, li pana mute e pilin ona lon sitelen la, ona li jan musi nanpa wan lon tenpo ona tawa sona pi jan sona.",
+
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/02/Michelangelo_Daniele_da_Volterra_%28dettaglio%29.jpg",
+    "date": "2024-10-14T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/jan_Mikelanselo",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "kalama musi [Intenasijonale]",
+    "summary": "kalama musi [Intenasijonale] (toki {Kanse}: {L'Internationale}) li kalama musi toki suli.",
+    "content": "kalama musi pona [Intenasijonale] (toki {Kanse}: {L'Internationale}) li kalama musi toki suli. pilin jan la, ona li kalama musi lawa pi nasin kulupu (nasin lawa) en nasin pi kulupu jo. toki ona li sitelen lon tenpo sike 1871. taso, kalama ona li sitelen lon tenpo sike 1888. open la, ona li lon toki Kanse. nimi ona li kama tan e kulupu pi jan pali lon ma ali, anu \"kulupu Intenasijonale nanpa wan\". ona li kulupu suli pi jan pali tan tenpo sike 1864.\n\njan li ante toki e kalama musi Intenasijonale tawa toki mute. wan ni li toki pona.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/L%27Internationale.jpg",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/kalama_musi_Intenasijonale",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "jan nanpa wan pi ma Oselija",
+    "summary": "tenpo sike 65,000 pini la, jan nanpa wan pi ma Oselija jan nanpa wan li kama tan ma Asija.",
+    "content": "jan nanpa wan pi ma Oselija\n tenpo sike 65,000 pini la, jan nanpa wan pi ma Oselija jan nanpa wan li kama tan ma Asija. ona li jo e ma mute e toki mute. ona li pali e ilo alasa mute li alasa e soweli e kala e waso e kasi. palisa alasa en palisa tawa kama li ni. jan nanpa wan ni li pali ala e tomo suli. kin la ona li tawa kepeken kulupu lili.\n\ntenpo sike 2500 pini (nanpa li ken mute) la kulupu jan pi ma telo Towe kulupu jan li tawa ma telo Towe tan ma Intonesija. ma telo ni li lon poka pi ma Kinlan li ma linja wan lon tenpo pini la jan li ken tawa lon ona. ona li toki tawa jan nanpa wan ante la toki wan ona li jo e nimi mute sama. ona li pali e ilo telo tawa li tawa mute lon telo.\n\njan kama pi ma Elopa\n tenpo sike nanpa 1606 la, jan pi ma Netelan li lukin tawa ma Oselija. ona li sitelen e ma selo mute, li pana e nimi . taso, ona li lon ala e tomo. pi ma Inli li sitelen e ma selo mute kin lon tenpo sike nanpa 1770. ona li pana e nimi tawa ma selo ni. ona li toki e ni: jan ala li lawa e ma ni la ma Inli li jo e ma selo ni. tenpo sike nanpa 1788 la, ma Inli li weka e jan ike e jan pakala tawa ma Niju Sato Welu. jan pi ma Inli li utala li moli li lawa e jan nanpa wan. ona li lanpan e jan lili tan mama pi jan nanpa wan. tenpo ni la, ni li awen, taso ni li pana kin e pilin ike tawa jan nanpa wan pi tenpo ni. ona li pana e nimi \"kulupu jan lanpan\" tawa jan nanpa wan tan ijo tenpo ni. tenpo ni la kulupu nanpa wan mute li weka anu lon ala. nasin mute ona en toki ona li lon ala. lon poka telo la ni li lon. ale ni li tan utala jan pi ma Elopa. ona li ante e ma li pali e tomo li tawa weka e jan li toki e ni: sina o toki ala e toki sina lon ma mi. toki mute ni li kama lon li kama wawa lon tenpo ni.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Kangaroo_Australia_01_11_2008_-_retouch.JPG/512px-Kangaroo_Australia_01_11_2008_-_retouch.JPG?20090215010405=",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/ma_Oselija",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "lipu \"Wikipedia\" anu lipu Wikipesija",
+    "summary": "lipu \"Wikipedia\" anu lipu Wikipesija li ilo li lipu sona suli.",
+    "content": "lipu \"Wikipedia\" anu lipu Wikipesija li ilo li lipu sona suli. ona li open lon tenpo sike nanpa 2001.\n\nona la jan mute li ken pana e lipu sona pi ijo ale. nasin ona la jan ale li ken pali e lipu li ken ante e lipu. ni li nasin Wiki. ona li lipu ante pi nasin Wiki. jan mute pi ma ale li kepeken lipu Wikipesija.\n\ntenpo pini\n\ntenpo sike nanpa 2001 la lipu Wikipedia li kama lon. tenpo ni la, kulupu Bomis li jo e ni. lipu ni li sama lipu Nupedia, li lipu sona pi jan sona.\n\ntenpo sike nanpa 2003 la kulupu jan Wikimesija li kama lon.\n\nlipu Wikipedia pi toki pona\n\nlipu Wikipedia li lon toki ante mute. taso ona li lon ala toki pona lon tenpo ni. tenpo pini la lipu \"Wikipedia\" li jo e ante lili pi toki pona. taso tenpo sike nanpa nanpa 2005 la ona li weka tan ni: jan pi mute lili li pali e ona. jan li pali e ante sin lon lipu Panton (Fandom).\n\nlipu Wikipesija\n\nkulupu li pali e lipu Wikipesija tawa ni: ona li wile kama e lipu \"Wikipedia\" sin pi toki pona. kulupu lawa pi lipu Panton ale li ante e nasin ona li lawa e lipu ale. tenpo sike nanpa nanpa 2021 la lipu Wikipesija pi toki pona li kama tawa e nasin lipu wikipesija.org.[1] lipu ni la jan sitelen li anpa ala tawa jan lawa pi lipu Panton.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/langtok-300px-Wikipedia-logo-v2.svg.png",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/lipu_Wikipedia",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "waso kule",
+    "summary": "waso kule, anu waso toki anu waso Psittacidae. ona li waso.",
+    "content": "waso kule, anu waso toki anu waso Psittacidae. ona li waso.\n\nsona\n\nwaso ni li kule mute tawa lukin. ona li jo e uta wawa pimeja. ona li sona mute, tan ni la ona li toki.\n\nona mute li lon ma Pasila, taso ona li lon ma ale.\n\nona li toki mute li kalama mute.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Ara_ararauna_-Jurong_Bird_Park%2C_Singapore-8.jpg",
+    "date": "2024-10-15T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/waso_kule",
+    "public": true,
+    "author": "jan Kolin"
+  },
+  {
+    "title": "musi utala Olinpi",
+    "summary": "musi utala Olinpi li musi utala suli mute pi musi sijelo.",
+    "content": "musi utala Olinpi (Olympics) li musi utala suli mute pi musi sijelo. Ona li musi utala nanpa wan pi musi sijelo lon ma ali. jan pi musi sijelo tan ma mute li utala musi e jan ante. Ona li lon kulupu pona pi jan tan ma sama ona. musi sijelo mute li lon musi utala Olinpi. musi utala Olinpo ante li lon tenpo seli li lon tenpo lete. jan lon ma Elena majuna li open e musi utala Olinpo pi tenpo pini. Kulupu IOC li kama li pali e musi utala lon ma tomo Asina. tenpo ni la, ma pi musi Olinpi ante li lon ma tomo mute ante.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Olympic_rings_without_rims.svg/langtok-300px-Olympic_rings_without_rims.svg.png",
+    "date": "2024-10-14T12:00:00",
+    "originalLink": "https://wikipesija.org/wiki/musi_utala_Olinpi",
+    "public": true,
+    "author": "jan Kolin"
   }
 ]

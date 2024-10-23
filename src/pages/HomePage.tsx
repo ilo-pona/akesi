@@ -49,9 +49,14 @@ const HomePage: React.FC = () => {
           : `${config.imagePrefix}${story.imageUrl}`,
       }));
 
-      setStories(processedData);
-      setCachedStories({ data: processedData, timestamp: Date.now() }); // Cache the stories with a timestamp
-      setHasOlderStories(data.length > STORIES_PER_PAGE);
+      setStories(prevStories => {
+        const newStories = [...prevStories, ...processedData];
+        const uniqueStories = Array.from(new Set(newStories.map(s => s.id)))
+          .map(id => newStories.find(s => s.id === id)!);
+        return uniqueStories;
+      });
+      setCachedStories({ data: processedData, timestamp: Date.now() });
+      setHasOlderStories(data.length === STORIES_PER_PAGE * PAGES_TO_FETCH);
       setHasNewerStories(currentPage > 1);
       setLoading(false);
     } catch (err) {
@@ -65,23 +70,29 @@ const HomePage: React.FC = () => {
     if (
       cachedStories &&
       cachedStories.data.length > 0 &&
-      currentTime - cachedStories.timestamp < CACHE_DURATION
+      currentTime - cachedStories.timestamp < CACHE_DURATION &&
+      cachedStories.data.length >= currentPage * STORIES_PER_PAGE
     ) {
-      // Use cached stories if they exist and are not expired
+      // Use cached stories if they exist, are not expired, and have enough data for the current page
       setStories(cachedStories.data);
-      setHasOlderStories(cachedStories.data.length > STORIES_PER_PAGE);
+      setHasOlderStories(cachedStories.data.length > currentPage * STORIES_PER_PAGE);
       setHasNewerStories(currentPage > 1);
       setLoading(false);
     } else {
-      // Fetch new stories if cache is empty or expired
+      // Fetch new stories if cache is empty, expired, or doesn't have enough data
       fetchStories();
     }
   }, [currentPage, cachedStories, fetchStories]);
 
-  const currentStories = stories.slice(0, STORIES_PER_PAGE);
+  const currentStories = stories.slice(
+    (currentPage - 1) * STORIES_PER_PAGE,
+    currentPage * STORIES_PER_PAGE
+  );
 
   const handleOlderStories = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (hasOlderStories) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   const handleNewerStories = () => {
@@ -107,7 +118,7 @@ const HomePage: React.FC = () => {
               />
             ))}
           </div>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center space-x-4 mt-8">
             {hasNewerStories && (
               <button
                 onClick={handleNewerStories}
