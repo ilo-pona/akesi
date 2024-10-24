@@ -16,7 +16,7 @@ import { SettingsProvider, useSettings } from "./contexts/SettingsContext";
 import { StoriesProvider } from "./contexts/StoriesContext";
 import { getFontFamily } from "./config/fontConfig";
 import { convertToUCSUR } from "./utils/ucsurConverter";
-import { fontOptions } from "./config/fontConfig";
+import { fontOptions, defaultAsciiFont, defaultUcsurFont } from "./config/fontConfig";
 
 function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -54,7 +54,19 @@ function AppContent() {
           });
           break;
         case "u":
-          updateSettings({ useUCSUR: !settings.useUCSUR });
+          const newUseUCSUR = !settings.useUCSUR;
+          const currentFont = fontOptions.find(font => font.value === settings.sitelenPonaFont);
+          let newFont = settings.sitelenPonaFont;
+          
+          if (currentFont) {
+            if (newUseUCSUR && !currentFont.ucsurCompatible) {
+              newFont = defaultUcsurFont;
+            } else if (!newUseUCSUR && !currentFont.asciiCompatible) {
+              newFont = defaultAsciiFont;
+            }
+          }
+          
+          updateSettings({ useUCSUR: newUseUCSUR, sitelenPonaFont: newFont });
           break;
         case "[":
           cycleFont(-1);
