@@ -13,7 +13,7 @@ db = client["stories"]
 db.stories.drop()
 
 # Load data from stories.json
-with open("../content/stories.json", "r", encoding="utf-8") as file:
+with open("../content/nanpa-jan/stories_tenpo.json", "r", encoding="utf-8") as file:
     stories_data = json.load(file)
 
 # Insert data into MongoDB

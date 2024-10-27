@@ -74,7 +74,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
   };
 
   const processText = (text: string | TokenizedText[], isEnglish: boolean) => {
-    console.log("XXXXX", typeof text, text);
     if (typeof text === "string") {
       return processStringText(text, isEnglish);
     } else {
