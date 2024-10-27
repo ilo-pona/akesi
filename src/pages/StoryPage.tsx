@@ -92,7 +92,7 @@ const StoryPage: React.FC = () => {
         </a>
       </div>
       <div className="prose prose-lg mb-8">
-        <EnhancedText text={story.content} />
+        <EnhancedText text={story.tokenised ? story.tokenised: story.content} />
       </div>
       <Link
         to={location.state?.from || "/"}

@@ -3,14 +3,15 @@ import { useSettings } from "../contexts/SettingsContext";
 import WordHint from "./WordHint";
 import { useTextRenderer } from "../hooks/useTextRenderer";
 import { tokiPonaDictionary } from "../data/tokiPonaDictionary";
+import { TokenizedText } from "../types/TokenizedText";
 
 const UCSUR_START_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD90"`);
 const UCSUR_END_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD91"`);
 
 interface EnhancedTextProps {
-  text: string;
+  text: string | TokenizedText[];
   isEnglish?: boolean;
-  removeExtraSpace?: boolean; // New prop
+  removeExtraSpace?: boolean;
 }
 
 const LatinText: React.FC<{ text: string }> = ({ text }) => (
@@ -20,7 +21,7 @@ const LatinText: React.FC<{ text: string }> = ({ text }) => (
 export const EnhancedText: React.FC<EnhancedTextProps> = ({
   text,
   isEnglish = false,
-  removeExtraSpace = false, // Default to false for backward compatibility
+  removeExtraSpace = false,
 }) => {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [hintPosition, setHintPosition] = useState<{
@@ -72,7 +73,16 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     return null;
   };
 
-  const processText = (text: string, isEnglish: boolean) => {
+  const processText = (text: string | TokenizedText[], isEnglish: boolean) => {
+    console.log("XXXXX", typeof text, text);
+    if (typeof text === "string") {
+      return processStringText(text, isEnglish);
+    } else {
+      return processTokenizedText(text, isEnglish);
+    }
+  };
+
+  const processStringText = (text: string, isEnglish: boolean) => {
     const paragraphs = text.split(/\n\s*\n/);
 
     return paragraphs.map((paragraph, paragraphIndex) => {
@@ -143,6 +153,55 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     });
   };
 
+  const processTokenizedText = (
+    tokens: TokenizedText[],
+    isEnglish: boolean
+  ) => {
+    return tokens.map((token, index) => {
+      switch (token.type) {
+        case "tokipona":
+          return renderTokiPona(token.content, isEnglish, index);
+        case "escaped":
+          return <LatinText key={`escaped-${index}`} text={token.content} />;
+        case "name":
+          return renderName(token, isEnglish, index);
+        case "illegal":
+        case "error":
+          return <LatinText key={`error-${index}`} text={token.content} />;
+        default:
+          return null;
+      }
+    });
+  };
+
+  const renderTokiPona = (
+    content: string,
+    isEnglish: boolean,
+    index: number
+  ) => {
+    const { text: processedPart } = renderText(content, isEnglish);
+    return (
+      <React.Fragment key={`tokipona-${index}`}>{processedPart}</React.Fragment>
+    );
+  };
+
+  const renderName = (
+    token: { name: string; toki_name?: string },
+    isEnglish: boolean,
+    index: number
+  ) => {
+    const content = token.content.toki_name || token.content.name;
+    return isEnglish || settings.render === "latin"
+      ? token.content.name
+      : wrapCartouche(
+          token.content.toki_name
+            ? `[${content}]`
+            : `[${content.toUpperCase()}]`,
+          settings.useUCSUR && settings.render !== "latin",
+          `name-${index}`
+        );
+  };
+
   const { fontFamily } = renderText("", isEnglish);
   const processedTextParts = processText(text, isEnglish);
 
@@ -180,7 +239,11 @@ function isLegalTokiPonaWord(word: string): boolean {
 }
 
 // Helper function to wrap text in UCSUR cartouche delimiters if needed
-function wrapCartouche(text: string, useUCSUR: boolean): string {
+function wrapCartouche(
+  text: string,
+  useUCSUR: boolean,
+  index?: string
+): string {
   if (useUCSUR) {
     return `${UCSUR_START_CARTOUCHE}${text.slice(1, -1)}${UCSUR_END_CARTOUCHE}`;
   }

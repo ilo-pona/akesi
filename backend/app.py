@@ -3,10 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List
 import os
 import uuid
+from ilo import preprocess
 
 app = FastAPI()
 
@@ -28,6 +29,7 @@ stories_collection = db.stories
 IMAGE_UPLOAD_DIR = os.getenv("IMAGE_UPLOAD_DIR", "./images")
 os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
 
+
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -44,6 +46,15 @@ class PyObjectId(ObjectId):
         field_schema.update(type="string")
 
 
+class TokiName(BaseModel):
+    name: str
+    toki_name: str | None = None
+
+
+class TokenizedText(BaseModel):
+    type: str
+    content: str | TokiName
+
 class Story(BaseModel):
     id: str
     title: str
@@ -53,13 +64,17 @@ class Story(BaseModel):
     author: str
     date: str
     originalLink: str
+    tokenised: List[TokenizedText]
 
     class Config:
         allow_population_by_field_name = True
         json_encoders = {ObjectId: str}
 
 
-@app.get("/")
+
+app.get("/")
+
+
 async def root():
     return {"message": "See /stories for all stories"}
 
@@ -67,18 +82,35 @@ async def root():
 @app.get("/stories", response_model=List[Story])
 async def get_stories(
     skip: int = Query(0, ge=0, description="Number of stories to skip"),
-    limit: int = Query(10, ge=1, le=100, description="Number of stories to return")
+    limit: int = Query(10, ge=1, le=100, description="Number of stories to return"),
 ):
     stories = await stories_collection.find().skip(skip).limit(limit).to_list(limit)
-    return [Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"}) for story in stories]
+    return [
+        Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"})
+        for story in stories
+    ]
 
 
 @app.get("/stories/{story_id}", response_model=Story)
 async def get_story(story_id: str):
     story = await stories_collection.find_one({"_id": ObjectId(story_id)})
     if story:
-        return Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"})
+        return Story(
+            id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"}
+        )
     raise HTTPException(status_code=404, detail="Story not found")
+
+
+@app.post("/stories/tokenise", response_model=Story)
+async def tokenise_story(story: Story):
+    story_dict = story.dict(exclude={"id"})
+    story_dict["tokenised"] = preprocess(story_dict["content"])
+    new_story = await stories_collection.insert_one(story_dict)
+    created_story = await stories_collection.find_one({"_id": new_story.inserted_id})
+    return Story(
+        id=str(created_story["_id"]),
+        **{k: v for k, v in created_story.items() if k != "_id"},
+    )
 
 
 @app.post("/stories", response_model=Story)
@@ -86,7 +118,10 @@ async def create_story(story: Story):
     story_dict = story.dict(exclude={"id"})
     new_story = await stories_collection.insert_one(story_dict)
     created_story = await stories_collection.find_one({"_id": new_story.inserted_id})
-    return Story(id=str(created_story["_id"]), **{k: v for k, v in created_story.items() if k != "_id"})
+    return Story(
+        id=str(created_story["_id"]),
+        **{k: v for k, v in created_story.items() if k != "_id"},
+    )
 
 
 @app.put("/stories/{story_id}", response_model=Story)
@@ -97,7 +132,10 @@ async def update_story(story_id: str, story: Story):
         return_document=True,
     )
     if updated_story:
-        return Story(id=str(updated_story["_id"]), **{k: v for k, v in updated_story.items() if k != "_id"})
+        return Story(
+            id=str(updated_story["_id"]),
+            **{k: v for k, v in updated_story.items() if k != "_id"},
+        )
     raise HTTPException(status_code=404, detail="Story not found")
 
 
@@ -108,16 +146,18 @@ async def delete_story(story_id: str):
         return {"message": "Story deleted successfully"}
     raise HTTPException(status_code=404, detail="Story not found")
 
+
 @app.put("/images", response_model=dict)
 async def upload_image(file: UploadFile = File(...)):
     file_extension = os.path.splitext(file.filename)[1]
     new_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = os.path.join(IMAGE_UPLOAD_DIR, new_filename)
-    
+
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
-    
+
     return {"image_id": new_filename}
+
 
 @app.get("/images/{image_id}")
 async def get_image(image_id: str):
