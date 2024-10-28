@@ -4,6 +4,7 @@ import WordHint from "./WordHint";
 import { useTextRenderer } from "../hooks/useTextRenderer";
 import { tokiPonaDictionary } from "../data/tokiPonaDictionary";
 import { TokenizedText } from "../types/TokenizedText";
+import marked from "marked";
 
 const UCSUR_START_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD90"`);
 const UCSUR_END_CARTOUCHE = JSON.parse(`"\\uDB86\\uDD91"`);
@@ -167,6 +168,38 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
         case "illegal":
         case "error":
           return <LatinText key={`error-${index}`} text={token.content} />;
+        case "bold_start":
+          return <strong key={`bold_start-${index}`}></strong>;
+        case "bold_end":
+          return <strong key={`bold_end-${index}`}></strong>;
+        case "italic_start":
+          return <em key={`italic_start-${index}`}></em>;
+        case "italic_end":
+          return <em key={`italic_end-${index}`}></em>;
+        case "heading1_start":
+          return <h1 key={`heading1_start-${index}`}></h1>;
+        case "heading1_end":
+          return <h1 key={`heading1_end-${index}`}></h1>;
+        case "heading2_start":
+          return <h2 key={`heading2_start-${index}`}></h2>;
+        case "heading2_end":
+          return <h2 key={`heading2_end-${index}`}></h2>;
+        case "heading3_start":
+          return <h3 key={`heading3_start-${index}`}></h3>;
+        case "heading3_end":
+          return <h3 key={`heading3_end-${index}`}></h3>;
+        case "strikethrough_start":
+          return <del key={`strikethrough_start-${index}`}></del>;
+        case "strikethrough_end":
+          return <del key={`strikethrough_end-${index}`}></del>;
+        case "image":
+          return (
+            <img
+              key={`image-${index}`}
+              src={token.content}
+              alt="Markdown Image"
+            />
+          );
         default:
           return null;
       }

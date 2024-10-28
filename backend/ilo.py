@@ -2,6 +2,7 @@ import re
 import os
 from PIL import Image, ImageDraw, ImageFont
 import uuid
+import markdown
 
 # from fontTools.ttLib import TTFont
 
@@ -585,6 +586,39 @@ def preprocess(content: str) -> str:
                 consolidated_buffer[-1] = (tok[0], consolidated_buffer[-1][1] + tok[1])
                 continue
         consolidated_buffer.append(tok)
+
+    # Markdown parsing
+    markdown_tokens = markdown.markdown(content).split()
+    for token in markdown_tokens:
+        if token.startswith("<strong>"):
+            consolidated_buffer.append(("bold_start", ""))
+        elif token.startswith("</strong>"):
+            consolidated_buffer.append(("bold_end", ""))
+        elif token.startswith("<em>"):
+            consolidated_buffer.append(("italic_start", ""))
+        elif token.startswith("</em>"):
+            consolidated_buffer.append(("italic_end", ""))
+        elif token.startswith("<h1>"):
+            consolidated_buffer.append(("heading1_start", ""))
+        elif token.startswith("</h1>"):
+            consolidated_buffer.append(("heading1_end", ""))
+        elif token.startswith("<h2>"):
+            consolidated_buffer.append(("heading2_start", ""))
+        elif token.startswith("</h2>"):
+            consolidated_buffer.append(("heading2_end", ""))
+        elif token.startswith("<h3>"):
+            consolidated_buffer.append(("heading3_start", ""))
+        elif token.startswith("</h3>"):
+            consolidated_buffer.append(("heading3_end", ""))
+        elif token.startswith("<del>"):
+            consolidated_buffer.append(("strikethrough_start", ""))
+        elif token.startswith("</del>"):
+            consolidated_buffer.append(("strikethrough_end", ""))
+        elif token.startswith("<img"):
+            src = re.search(r'src="([^"]+)"', token).group(1)
+            consolidated_buffer.append(("image", src))
+        else:
+            consolidated_buffer.append(("tokipona", token))
 
     return [{"type": x[0], "content": x[1]} for x in consolidated_buffer]
 
