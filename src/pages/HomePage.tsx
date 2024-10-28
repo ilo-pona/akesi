@@ -7,8 +7,8 @@ import { config } from "../config";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStories } from "../contexts/StoriesContext";
 
-const STORIES_PER_PAGE = 4;
-const PAGES_TO_FETCH = 2;
+const STORIES_PER_PAGE = 6;
+const PAGES_TO_FETCH = 3;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 const HomePage: React.FC = () => {
@@ -39,7 +39,8 @@ const HomePage: React.FC = () => {
     try {
       setLoading(true);
       const skip = (currentPage - 1) * STORIES_PER_PAGE;
-      const limit = STORIES_PER_PAGE * PAGES_TO_FETCH;
+      const limit = STORIES_PER_PAGE * PAGES_TO_FETCH + 1;
+      console.log("fetching", skip, limit, cachedStories?.data.length);
       const response = await fetch(
         `${config.apiBaseUrl}/stories?skip=${skip}&limit=${limit}`
       );
@@ -56,26 +57,26 @@ const HomePage: React.FC = () => {
           : `${config.imagePrefix}${story.imageUrl}`,
       }));
 
-      setStories(prevStories => {
-        const newStories = [...prevStories, ...processedData];
-        const uniqueStories = Array.from(new Set(newStories.map(s => s.id)))
-          .map(id => newStories.find(s => s.id === id)!);
-        return uniqueStories;
-      });
-      
-      setCachedStories(prevCachedStories => {
-        const newData = prevCachedStories ? [...prevCachedStories.data, ...processedData] : processedData;
-        const uniqueData = Array.from(new Set(newData.map(s => s.id)))
-          .map(id => newData.find(s => s.id === id)!);
-        return { data: uniqueData, timestamp: Date.now() };
+      setStories(processedData); // Don't accumulate, just set the new batch
+      setCachedStories((prevCache) => {
+        const existingStories = prevCache?.data || [];
+        const allStories = [...existingStories, ...processedData];
+        // Remove duplicates based on story ID
+        const uniqueStories = Array.from(
+          new Map(allStories.map((story) => [story.id, story])).values()
+        );
+        return {
+          data: uniqueStories,
+          timestamp: Date.now(),
+        };
       });
 
-      const newHasOlderStories = data.length === STORIES_PER_PAGE * PAGES_TO_FETCH;
+      const newHasOlderStories =
+        data.length > STORIES_PER_PAGE * PAGES_TO_FETCH;
       const newHasNewerStories = currentPage > 1;
       setHasOlderStories(newHasOlderStories);
       setHasNewerStories(newHasNewerStories);
       setLoading(false);
-      
     } catch (err) {
       setError("Error fetching stories. Please try again later.");
       setLoading(false);
@@ -84,17 +85,23 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const currentTime = Date.now();
-    const shouldFetchNewStories = !cachedStories ||
+    const shouldFetchNewStories =
+      !cachedStories ||
       cachedStories.data.length === 0 ||
-      currentTime - cachedStories.timestamp >= CACHE_DURATION;
-      //  ||
-      // cachedStories.data.length < currentPage * STORIES_PER_PAGE;
-
+      currentTime - cachedStories.timestamp >= CACHE_DURATION ||
+      cachedStories.data.length < currentPage * STORIES_PER_PAGE;
+    console.log(
+      cachedStories?.data.length,
+      currentPage * STORIES_PER_PAGE,
+      shouldFetchNewStories
+    );
     if (shouldFetchNewStories) {
       fetchStories();
     } else {
       setStories(cachedStories.data);
-      setHasOlderStories(cachedStories.data.length > currentPage * STORIES_PER_PAGE);
+      setHasOlderStories(
+        cachedStories.data.length >= currentPage * STORIES_PER_PAGE
+      );
       setHasNewerStories(currentPage > 1);
       setLoading(false);
     }
@@ -104,7 +111,6 @@ const HomePage: React.FC = () => {
     (currentPage - 1) * STORIES_PER_PAGE,
     currentPage * STORIES_PER_PAGE
   );
-
 
   const handleOlderStories = () => {
     if (hasOlderStories) {
@@ -126,17 +132,18 @@ const HomePage: React.FC = () => {
         <EnhancedText text="sona sin pi toki pona" isEnglish={false} />
       </h1>
       {loading ? (
-        <div><EnhancedText text="Loading stories..." isEnglish={true} /></div>
+        <div>
+          <EnhancedText text="Loading stories..." isEnglish={true} />
+        </div>
       ) : error ? (
-        <div className="text-red-500"><EnhancedText text={error} isEnglish={true} /></div>
+        <div className="text-red-500">
+          <EnhancedText text={error} isEnglish={true} />
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {currentStories.map((story, index) => (
-              <StoryCard
-                key={`${story.id}-${index}`}
-                story={story}
-              />
+              <StoryCard key={`${story.id}-${index}`} story={story} />
             ))}
           </div>
           <div className="flex justify-center space-x-4 mt-8">
@@ -144,8 +151,8 @@ const HomePage: React.FC = () => {
               onClick={hasNewerStories ? handleNewerStories : undefined}
               className={`px-4 py-2 rounded ${
                 hasNewerStories
-                  ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
               disabled={!hasNewerStories}
             >
@@ -155,8 +162,8 @@ const HomePage: React.FC = () => {
               onClick={hasOlderStories ? handleOlderStories : undefined}
               className={`px-4 py-2 rounded ${
                 hasOlderStories
-                  ? 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
               disabled={!hasOlderStories}
             >

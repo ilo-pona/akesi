@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 from ilo import preprocess
+import sys
 
 # Connect to MongoDB
 client = MongoClient(os.getenv("MONGO_URI"))
@@ -10,10 +11,17 @@ print(os.getenv("MONGO_URI"))
 db = client["stories"]
 
 # Drop existing collections
-db.stories.drop()
+
+INPUT_FILE = "../content/nanpa-jan/stories_nanpa-jan.json"
+if "-d" in sys.argv:
+    db.stories.drop()
+    sys.argv.remove("-d")
+
+if len(sys.argv) > 1:
+    INPUT_FILE = sys.argv[1]
 
 # Load data from stories.json
-with open("../content/nanpa-jan/stories_tenpo.json", "r", encoding="utf-8") as file:
+with open(INPUT_FILE, "r", encoding="utf-8") as file:
     stories_data = json.load(file)
 
 # Insert data into MongoDB

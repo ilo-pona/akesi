@@ -5,6 +5,18 @@ export interface TokiPonaWord {
   definition: string;
 }
 
+export interface UnorthodoxWord {
+  word: string;
+  original: string;
+}
+
+export const unorthodoxies: UnorthodoxWord[] = [
+  {
+    word: "ali",
+    original: "ale",
+  },
+];
+
 export const tokiPonaDictionary: TokiPonaWord[] = [
   {
     word: "a",

@@ -7,12 +7,15 @@ import uuid
 
 # TODO ligatures
 
+UNORTHODOXIES = {"ali": "ale"}
+
 ASCII_TO_SITELEN = {
     "a": "\U000F1900",
     "akesi": "\U000F1901",
     "ala": "\U000F1902",
     "alasa": "\U000F1903",
     "ale": "\U000F1904",
+    "ali": "\U000F1904",
     "anpa": "\U000F1905",
     "ante": "\U000F1906",
     "anu": "\U000F1907",
@@ -159,6 +162,7 @@ ASCII_TO_DEFINITION = {
     "ala": "no, not, zero",
     "alasa": "to hunt, forage",
     "ale": "all; abundant, every, universe",
+    "ali": "all; abundant, every, universe",
     "anpa": "down, lowly, humble",
     "ante": "different, altered, other",
     "anu": "or",
@@ -495,6 +499,8 @@ def preprocess(content: str) -> str:
         if next_word is not None:
             # print(">" + next_word[-1] + ">")
             w = next_word[0]
+            if w in UNORTHODOXIES:
+                w = UNORTHODOXIES[w]
 
             # check if w has a capital letter in it
             i += len(w)
@@ -521,16 +527,29 @@ def preprocess(content: str) -> str:
     last_tok = None
     buffer = []
     for tok in tokens:
-        if tok[0] in ["tokipona", "illegal", "escaped"]:
+        if tok[0] in ["tokipona", "illegal", "escaped", "name"]:
             if last_tok == tok[0]:
-                buffer[-1] = (tok[0], buffer[-1][1] + tok[1])
+                if (
+                    last_tok == "name"
+                    and "toki_name" in tok[1]
+                    and tok[1]["toki_name"] is not None
+                ):
+                    buffer[-1] = (
+                        tok[0],
+                        {
+                            "name": buffer[-1][1]["name"] + tok[1]["name"],
+                            "toki_name": tok[1]["toki_name"],
+                        },
+                    )
+                else:
+                    buffer[-1] = (tok[0], buffer[-1][1] + tok[1])
             else:
                 buffer.append(tok)
         else:
             buffer.append(tok)
         last_tok = tok[0]
 
-    # New code to handle whitespace and punctuation
+    # Handle whitespace and punctuation
     final_buffer = []
     for tok in buffer:
         if tok[0] in ["tokipona", "illegal", "escaped"] and tok[1].strip() == "":
@@ -542,23 +561,30 @@ def preprocess(content: str) -> str:
             ]:
                 # Add it to the previous token if one exists
                 final_buffer[-1] = (final_buffer[-1][0], final_buffer[-1][1] + tok[1])
+            elif final_buffer and final_buffer[-1][0] in ["name"]:
+                foo = final_buffer[-1]
+                foo[1]["name"] += tok[1]
+                final_buffer[-1] = foo
+                # final_buffer[-1] = (final_buffer[-1][0], final_buffer[-1][1] + tok[1])
             else:
                 # If it's the first token, keep it as is
                 final_buffer.append(tok)
         else:
             final_buffer.append(tok)
 
-    # Consolidate consecutive tokens of the same type, except for "name"
     consolidated_buffer = []
     for tok in final_buffer:
-        if (
-            consolidated_buffer
-            and tok[0] == consolidated_buffer[-1][0]
-            and tok[0] != "name"
-        ):
-            consolidated_buffer[-1] = (tok[0], consolidated_buffer[-1][1] + tok[1])
-        else:
-            consolidated_buffer.append(tok)
+        if consolidated_buffer and tok[0] == consolidated_buffer[-1][0]:
+            if consolidated_buffer[-1][0] == "name":
+                if "toki_name" not in consolidated_buffer[-1][1]:
+                    if "toki_name" not in tok[1]:
+                        newname = consolidated_buffer[-1][1]["name"] + tok[1]["name"]
+                        consolidated_buffer[-1] = ("name", {"name": newname})
+                        continue
+            else:
+                consolidated_buffer[-1] = (tok[0], consolidated_buffer[-1][1] + tok[1])
+                continue
+        consolidated_buffer.append(tok)
 
     return [{"type": x[0], "content": x[1]} for x in consolidated_buffer]
 
