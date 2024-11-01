@@ -58,10 +58,6 @@ const FontLoader: React.FC = () => {
     fontsToLoad.forEach((font) => loadSelectedFont(font));
   }, [settings.sitelenPonaFont, loadSelectedFont]);
 
-  // useEffect(() => {
-  // console.log('Currently loaded fonts:', loadedFonts);
-  // }, [loadedFonts]);
-
   return null;
 };
 

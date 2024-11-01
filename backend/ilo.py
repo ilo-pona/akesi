@@ -455,7 +455,30 @@ def split_fancy_names(string: str):
         return {"name": tokens[0].strip()}
 
 
-def preprocess(content: str) -> str:
+def handle_markdown(content: str):
+    content = content.replace("\n\n", "\nPARAGRAPH_BREAK")
+    markdown_text =  markdown.markdown(content).replace("<p>", "").replace("</p>", "")
+    if "<" not in markdown_text:
+        return _preprocess(content)
+    markdown_text = re.sub(r'(</h[1-3]>)\n', r'\1', markdown_text)
+
+    markdown_tokens = markdown_text.split("<")
+    toks = []
+    for t in markdown_tokens:
+        if len(t) == 0:
+            continue
+        m, c = t.split(">")
+        c = c.replace("PARAGRAPH_BREAK", "\n")
+        toks.append({"type": "markdown", "content": m})
+        toks+= _preprocess(c)
+
+    return toks
+
+    
+def preprocess(content: str):
+    return handle_markdown(content)
+    
+def _preprocess(content: str):
     tokens = []
     token_type = "tokipona"
     output = ""
@@ -523,7 +546,7 @@ def preprocess(content: str) -> str:
             i += 1
 
     if len(output) > 0:
-        tokens.append((token_type, output.rstrip()))
+        tokens.append((token_type, output)) #.rstrip()))
 
     last_tok = None
     buffer = []
@@ -572,56 +595,20 @@ def preprocess(content: str) -> str:
                 final_buffer.append(tok)
         else:
             final_buffer.append(tok)
-
-    consolidated_buffer = []
-    for tok in final_buffer:
-        if consolidated_buffer and tok[0] == consolidated_buffer[-1][0]:
-            if consolidated_buffer[-1][0] == "name":
-                if "toki_name" not in consolidated_buffer[-1][1]:
-                    if "toki_name" not in tok[1]:
-                        newname = consolidated_buffer[-1][1]["name"] + tok[1]["name"]
-                        consolidated_buffer[-1] = ("name", {"name": newname})
-                        continue
-            else:
-                consolidated_buffer[-1] = (tok[0], consolidated_buffer[-1][1] + tok[1])
-                continue
-        consolidated_buffer.append(tok)
-
-    # Markdown parsing
-    markdown_tokens = markdown.markdown(content).split()
-    for token in markdown_tokens:
-        if token.startswith("<strong>"):
-            consolidated_buffer.append(("bold_start", ""))
-        elif token.startswith("</strong>"):
-            consolidated_buffer.append(("bold_end", ""))
-        elif token.startswith("<em>"):
-            consolidated_buffer.append(("italic_start", ""))
-        elif token.startswith("</em>"):
-            consolidated_buffer.append(("italic_end", ""))
-        elif token.startswith("<h1>"):
-            consolidated_buffer.append(("heading1_start", ""))
-        elif token.startswith("</h1>"):
-            consolidated_buffer.append(("heading1_end", ""))
-        elif token.startswith("<h2>"):
-            consolidated_buffer.append(("heading2_start", ""))
-        elif token.startswith("</h2>"):
-            consolidated_buffer.append(("heading2_end", ""))
-        elif token.startswith("<h3>"):
-            consolidated_buffer.append(("heading3_start", ""))
-        elif token.startswith("</h3>"):
-            consolidated_buffer.append(("heading3_end", ""))
-        elif token.startswith("<del>"):
-            consolidated_buffer.append(("strikethrough_start", ""))
-        elif token.startswith("</del>"):
-            consolidated_buffer.append(("strikethrough_end", ""))
-        elif token.startswith("<img"):
-            src = re.search(r'src="([^"]+)"', token).group(1)
-            consolidated_buffer.append(("image", src))
-        else:
-            consolidated_buffer.append(("tokipona", token))
-
-    return [{"type": x[0], "content": x[1]} for x in consolidated_buffer]
-
-
+    return [{"type": tok[0], "content": tok[1]} for tok in final_buffer]
+    # markdown_buffer = []
+    # for tok in final_buffer:
+        # if markdown_buffer and tok[0] == markdown_buffer[-1][0]:
+            # if markdown_buffer[-1][0] == "name":
+                # if "toki_name" not in markdown_buffer[-1][1]:
+                    # if "toki_name" not in tok[1]:
+                        # newname = markdown_buffer[-1][1]["name"] + tok[1]["name"]
+                        # markdown_buffer[-1] = ("name", {"name": newname})
+                        # continue
+            # else:
+                # markdown_buffer[-1] = (tok[0], markdown_buffer[-1][1] + tok[1])
+                # continue
+        # markdown_buffer.append(tok)
+# 
 if __name__ == "__main__":
     pass

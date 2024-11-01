@@ -14,6 +14,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 const HomePage: React.FC = () => {
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
+  const [askedFor, setAskedFor] = useState(-10);
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +42,7 @@ const HomePage: React.FC = () => {
       const skip = (currentPage - 1) * STORIES_PER_PAGE;
       const limit = STORIES_PER_PAGE * PAGES_TO_FETCH + 1;
       console.log("fetching", skip, limit, cachedStories?.data.length);
+      setAskedFor(limit + cachedStories?.data.length);
       const response = await fetch(
         `${config.apiBaseUrl}/stories?skip=${skip}&limit=${limit}`
       );
@@ -93,9 +95,11 @@ const HomePage: React.FC = () => {
     console.log(
       cachedStories?.data.length,
       currentPage * STORIES_PER_PAGE,
-      shouldFetchNewStories
+      shouldFetchNewStories,
+      askedFor
     );
-    if (shouldFetchNewStories) {
+    const datalen = cachedStories?.data.length || 0;
+    if (shouldFetchNewStories && askedFor <= datalen) {
       fetchStories();
     } else {
       setStories(cachedStories.data);

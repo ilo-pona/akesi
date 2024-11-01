@@ -15,10 +15,6 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
   const { settings, updateSettings } = useSettings();
 
   // Add this useEffect for debugging
-  useEffect(() => {
-    console.log('Settings updated:', settings);
-  }, [settings]);
-
   const availableFonts = fontOptions.filter(font => 
     (settings.useUCSUR && font.ucsurCompatible) ||
     (!settings.useUCSUR && font.asciiCompatible)

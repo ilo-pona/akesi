@@ -78,7 +78,7 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     if (typeof text === "string") {
       return processStringText(text, isEnglish);
     } else {
-      return processTokenizedText(text, isEnglish);
+      return processTokenizedText(text.slice(), isEnglish);
     }
   };
 
@@ -153,57 +153,110 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     });
   };
 
+  const parseAttributes = (attrString) => {
+    const attributes = {};
+    attrString.split(" ").forEach((attr) => {
+      const [key, value] = attr.split("=");
+      if (value === undefined) {
+        return;
+      }
+      attributes[key] = value.replace(/"/g, ""); // Remove quotes from the value
+    });
+    return attributes;
+  };
+
   const processTokenizedText = (
     tokens: TokenizedText[],
     isEnglish: boolean
   ) => {
-    return tokens.map((token, index) => {
+    // return <em>COLIN</em>;
+    const result = [];
+    var i = 0;
+    while (tokens.length > 0) {
+      const token = tokens.shift();
+      i++;
+      if (token.type === "markdown") {
+        if (token.content.startsWith("/")) {
+          return result;
+        } else if (token.content.startsWith("img")) {
+          var imgAttributes = parseAttributes(token.content);
+          result.push(
+            <img key={`image-${i}`} {...imgAttributes} />
+            // src={token.content} alt="inline image" />
+          );
+        }
+        switch (token.content) {
+          case "em":
+          case "strong":
+            result.push(
+              <strong key={`bold_start-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </strong>
+            );
+            break;
+          case "i":
+            result.push(
+              <em key={`italic_start-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </em>
+            );
+            break;
+          case "h1":
+            result.push(
+              <h1 className="text-3xl" key={`heading1_start-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </h1>
+            );
+            break;
+          case "h2":
+            result.push(
+              <h2 className="text-2xl" key={`heading2_start-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </h2>
+            );
+            break;
+          case "h3":
+            result.push(
+              <h3 className="text-2xl" key={`heading3_start-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </h3>
+            );
+            break;
+          case "del":
+            result.push(
+              <del className="line-through" key={`strikethrough_start-${i}`}>
+                {processTokenizedText(token.content, isEnglish)}
+              </del>
+            );
+            break;
+          case "img":
+            result.push(
+              <img key={`image-${i}`} src={token.content} alt="inline image" />
+            );
+            break;
+        }
+      }
+
       switch (token.type) {
         case "tokipona":
-          return renderTokiPona(token.content, isEnglish, index);
+          result.push(renderTokiPona(token.content, isEnglish, i));
+          break;
         case "escaped":
-          return <LatinText key={`escaped-${index}`} text={token.content} />;
+          result.push(<LatinText key={`escaped-${i}`} text={token.content} />);
+          break;
         case "name":
-          return renderName(token, isEnglish, index);
+          result.push(renderName(token, isEnglish, i));
+          break;
         case "illegal":
         case "error":
-          return <LatinText key={`error-${index}`} text={token.content} />;
-        case "bold_start":
-          return <strong key={`bold_start-${index}`}></strong>;
-        case "bold_end":
-          return <strong key={`bold_end-${index}`}></strong>;
-        case "italic_start":
-          return <em key={`italic_start-${index}`}></em>;
-        case "italic_end":
-          return <em key={`italic_end-${index}`}></em>;
-        case "heading1_start":
-          return <h1 key={`heading1_start-${index}`}></h1>;
-        case "heading1_end":
-          return <h1 key={`heading1_end-${index}`}></h1>;
-        case "heading2_start":
-          return <h2 key={`heading2_start-${index}`}></h2>;
-        case "heading2_end":
-          return <h2 key={`heading2_end-${index}`}></h2>;
-        case "heading3_start":
-          return <h3 key={`heading3_start-${index}`}></h3>;
-        case "heading3_end":
-          return <h3 key={`heading3_end-${index}`}></h3>;
-        case "strikethrough_start":
-          return <del key={`strikethrough_start-${index}`}></del>;
-        case "strikethrough_end":
-          return <del key={`strikethrough_end-${index}`}></del>;
-        case "image":
-          return (
-            <img
-              key={`image-${index}`}
-              src={token.content}
-              alt="Markdown Image"
-            />
-          );
+          result.push(<LatinText key={`error-${i}`} text={token.content} />);
+          break;
         default:
-          return null;
+          break;
       }
-    });
+    }
+
+    return result;
   };
 
   const renderTokiPona = (
