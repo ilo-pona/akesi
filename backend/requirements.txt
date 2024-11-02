@@ -1,0 +1,6 @@
+uvicorn
+fastapi
+pymongo
+motor
+python-multipart
+pyjwt
