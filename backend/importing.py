@@ -4,45 +4,72 @@ from bson import ObjectId
 import os
 from ilo import preprocess
 import sys
+from datetime import datetime, UTC
 
-def import_file(file_path, delete=False, summarize=False):
-    # Load data from stories.json
-    with open(file_path, "r", encoding="utf-8") as file:
-        stories_data = json.load(file)
-    client = MongoClient(os.getenv("MONGO_URI"))
-    print(os.getenv("MONGO_URI"))
-    db = client["stories"]
-    import_stories(stories_data, db, delete=delete, summarize=summarize)
+def preprocess_story(story, summarize=False):
+    """
+    Preprocess a story by tokenizing content and generating summary if needed
+    
+    Args:
+        story: Dictionary containing story data
+        summarize: Boolean to force summary generation
+    
+    Returns:
+        Processed story dictionary
+    """
+    story["tokenised"] = preprocess(story["content"])
+    
+    if summarize or "summary" not in story or len(story.get('summary', '')) == 0:
+        summary = [t['content'] for t in story["tokenised"] if t['type'] != 'markdown']
+        summary = [t['name'] if isinstance(t, dict) and 'name' in t else t for t in summary]
+        summary = " ".join(summary)[:100] + "..."
+        story["summary"] = summary
+    
+    # Handle the date field
+    if "date" in story:
+        # If it's a string, convert to datetime
+        if isinstance(story["date"], str):
+            story["date"] = datetime.fromisoformat(story["date"].replace('Z', '+00:00'))
+        # If no date provided, use current time
+        elif "date" not in story:
+            story["date"] = datetime.now(UTC)
+    else:
+        story["date"] = datetime.now(UTC)
+    
+    return story
 
 async def import_story(story_data, db, delete=False, summarize=False):
-    import_stories([story_data], db, delete=delete, summarize=summarize)
+    # Convert single story dict to list for processing
+    story = story_data[0] if isinstance(story_data, list) else story_data
+    
+    print("Preprocessing story")
+    story = preprocess_story(story, summarize)
+
+    # Insert single story and return the complete document
+    result = await db.insert_one(story)
+    inserted_story = await db.find_one({"_id": result.inserted_id})
+    return inserted_story
 
 def import_stories(stories_data, db, delete=False, summarize=False):
-    # Connect to MongoDB
-
     if delete:
         print("Deleting existing stories")
-        db.stories.drop()
+        db.drop()
 
-    # Insert data into MongoDB
+    # Preprocess all stories
     for story in stories_data:
         print("Preprocessing story")
-        # Convert date string to datetime object
-        # story["date"] = datetime.fromisoformat(story["date"])
-
-        # Add _id field with ObjectId
-        story["_id"] = ObjectId()
-        story["tokenised"] = preprocess(story["content"])
-        if summarize or "summary" not in story or len(story['summary']) == 0:
-            summary = [t['content'] for t in story["tokenised"] if t['type'] != 'markdown']
-            summary = [t['name'] if isinstance(t, dict) and 'name' in t else t for t in summary]
-            summary = " ".join(summary)[:100] + "..."
-            story["summary"] = summary
+        story = preprocess_story(story, summarize)
 
     # Insert all stories at once
-    return db.stories.insert_many(stories_data)
+    return db.insert_many(stories_data)
 
     # print(f"Imported {len(stories_data)} stories into the database.")
+
+def import_file(file_path, delete=False, summarize=False):
+    db = MongoClient(os.getenv("MONGO_URI"))["stories"]
+    with open(file_path, "r", encoding="utf-8") as file:
+        stories_data = json.load(file)
+    import_stories(stories_data, db.stories, delete=delete, summarize=summarize)
 
 if __name__ == "__main__":
     delete = False

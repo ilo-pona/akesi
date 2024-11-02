@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import StoryPage from "./pages/StoryPage";
 import AboutPage from "./pages/AboutPage";
+import CreateStoryPage from "./pages/CreateStoryPage";
 import SettingsPage from "./pages/SettingsPage";
 import FontLoader from "./utils/FontLoader";
 import { SettingsProvider, useSettings } from "./contexts/SettingsContext";
@@ -121,6 +122,7 @@ function AppContent() {
             <Route path="/page/:page" element={<HomePage />} />
             <Route path="/story/:id" element={<StoryPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/create" element={<CreateStoryPage />} />
           </Routes>
         </main>
         <Footer />

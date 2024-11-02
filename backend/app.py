@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query, UploadFile, File
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -9,6 +9,9 @@ import os
 import uuid
 from ilo import preprocess
 from importing import import_story
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import jwt
+from datetime import datetime, timedelta, UTC
 
 app = FastAPI()
 
@@ -29,6 +32,22 @@ stories_collection = db.stories
 # Add these constants at the top of the file, after the imports
 IMAGE_UPLOAD_DIR = os.getenv("IMAGE_UPLOAD_DIR", "./images")
 os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
+
+# Add these constants after the MongoDB connection setup
+JWT_SECRET = os.environ.get("JWT_SECRET")
+security = HTTPBearer()
+
+# Add this function to verify JWT tokens
+async def verify_jwt(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=["HS256"])
+        return payload
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 
 class PyObjectId(ObjectId):
@@ -57,19 +76,29 @@ class TokenizedText(BaseModel):
     content: str | TokiName
 
 class Story(BaseModel):
-    id: str
+    id: str | None = None
     title: str
-    summary: str
-    content: str
-    imageUrl: str
-    author: str
-    date: str
-    originalLink: str
-    tokenised: List[TokenizedText]
+    summary: str | None = None
+    content: str 
+    imageUrl: str | None = None
+    author: str | None = None
+    date: datetime | None = None
+    originalLink: str | None = None
+    tokenised: List[TokenizedText] | None = None
 
     class Config:
-        allow_population_by_field_name = True
-        json_encoders = {ObjectId: str}
+        populate_by_name = True
+        json_encoders = {
+            ObjectId: str,
+            datetime: lambda dt: dt.isoformat() + "Z"
+        }
+        json_schema_extra = {
+            "example": {
+                "title": "Example Story",
+                "content": "Story content...",
+                "date": "2024-03-21T12:00:00Z"
+            }
+        }
 
 
 
@@ -83,7 +112,7 @@ async def get_stories(
     skip: int = Query(0, ge=0, description="Number of stories to skip"),
     limit: int = Query(100, ge=1, le=100, description="Number of stories to return"),
 ):
-    stories = await stories_collection.find().skip(skip).limit(limit).to_list(limit)
+    stories = await stories_collection.find().sort("date", -1).skip(skip).limit(limit).to_list(limit)
     return [
         Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"})
         for story in stories
@@ -113,12 +142,13 @@ async def tokenise_story(story: Story):
 
 
 @app.post("/stories", response_model=Story)
-async def create_story(story: Story):
-    story_dict = story.dict(exclude={"id"})
-    created_story = await import_story([story_dict], stories_collection, summarize=True), 
-
-    # new_story = await stories_collection.insert_one(story_dict)
-    # created_story = await stories_collection.find_one({"_id": new_story.inserted_id})
+async def create_story(
+    story: Story,
+    token_payload: dict = Depends(verify_jwt) 
+):
+    story_dict = story.model_dump(exclude={"id"})
+    created_story = await import_story([story_dict], stories_collection, summarize=True)
+    print("CREATED: ", str(created_story['_id']))
     return Story(
         id=str(created_story["_id"]),
         **{k: v for k, v in created_story.items() if k != "_id"},
@@ -166,3 +196,30 @@ async def get_image(image_id: str):
     if os.path.exists(file_path):
         return FileResponse(file_path)
     raise HTTPException(status_code=404, detail="Image not found")
+
+
+
+def generate_token(user_id: str, days_to_expire: int = 30) -> str:
+    """
+    Generate a JWT token with an expiry date
+    
+    Args:
+        user_id: Unique identifier for the user
+        days_to_expire: Number of days until token expires (default: 30)
+        
+    Returns:
+        str: JWT token
+    """
+    expiration = datetime.now(UTC)+ timedelta(days=days_to_expire)
+    
+    payload = {
+        'user_id': user_id,
+        'exp': expiration,
+        'iat': datetime.now(UTC)  # issued at
+    }
+    
+    token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    return token
+
+if __name__ == "__main__":
+    print(generate_token("kolin@akesi.site"))
