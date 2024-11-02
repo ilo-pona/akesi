@@ -25,16 +25,12 @@ def preprocess_story(story, summarize=False):
         summary = " ".join(summary)[:100] + "..."
         story["summary"] = summary
     
-    # Handle the date field
-    if "date" in story:
-        # If it's a string, convert to datetime
-        if isinstance(story["date"], str):
-            story["date"] = datetime.fromisoformat(story["date"].replace('Z', '+00:00'))
-        # If no date provided, use current time
-        elif "date" not in story:
-            story["date"] = datetime.now(UTC)
-    else:
+    # Handle the date field - use current time if date is null or missing
+    if not story.get("date"):
         story["date"] = datetime.now(UTC)
+    # If it's a string, convert to datetime
+    elif isinstance(story["date"], str):
+        story["date"] = datetime.fromisoformat(story["date"].replace('Z', '+00:00'))
     
     return story
 
