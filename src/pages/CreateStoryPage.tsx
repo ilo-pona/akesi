@@ -30,6 +30,7 @@ const CreateStoryPage: React.FC = () => {
     date: null,  // Initialize as null
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -64,6 +65,7 @@ const CreateStoryPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null); // Clear any previous errors
 
     try {
       let imageUrl = form.imageUrl;
@@ -97,14 +99,14 @@ const CreateStoryPage: React.FC = () => {
         }),
       });
 
-      if (response.ok) {
-        navigate('/');
-      } else {
-        throw new Error('Failed to create story');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to create story');
       }
-    } catch (error) {
-      console.error('Error creating story:', error);
-      // Handle error (e.g., show error message to user)
+
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -113,6 +115,13 @@ const CreateStoryPage: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Create New Story</h1>
+      
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="jwtToken" className="block mb-2">JWT Token</label>
