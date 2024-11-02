@@ -10,12 +10,12 @@ const AboutPage: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/2">
           <h1 className="text-3xl font-bold mb-4">toki lon ilo Akesi</h1>
-          <p className="mb-4">
+          <div className="mb-4">
             <EnhancedText
               text={`kama pona tawa Akesi, jan pona tawa kama sona en kama lukin e toki pona! Akesi li pali tawa pana e musi e pali pona tawa sina. sona pi toka pona li musi mute a!`}
             />
-          </p>
-          <p className="mb-4">
+          </div>
+          <div className="mb-4">
             <a
               href="https://tokipona.org"
               className="text-blue-600 hover:text-blue-800 underline"
@@ -25,17 +25,17 @@ const AboutPage: React.FC = () => {
             <EnhancedText
               text={`jan Sonja Lang li pali e ona lon tenpo suno tu ala tu wan (2001), li toki lili pi pona mute en pilin nasa pi toki. Kepeken nimi lili tu wan ala wan (120) taso en toki pona, Toki Pona li wile e pilin seli en sona pi ijo pona taso.  `}
             />
-          </p>
-          <p className="mb-4">
+          </div>
+          <div className="mb-4">
             <EnhancedText
               text={`Sina wile pana e pali tawa lipu ni, kepeken ante e toki, o toki tawa `}
             />
             jan.kolin@akesi.site.
-          </p>
+          </div>
         </div>
         <div className="w-full md:w-1/2">
           <h1 className="text-3xl font-bold mb-4">About Akesi</h1>
-          <p className="mb-4">
+          <div className="mb-4">
             Welcome to Akesi, a companion for learning and exploring the
             wonderful language of{" "}
             <a
@@ -46,8 +46,8 @@ const AboutPage: React.FC = () => {
             </a>{" "}
             Akesi is designed to make your journey into the world of Toki Pona
             engaging, interactive, and fun.
-          </p>
-          <p className="mb-4">
+          </div>
+          <div className="mb-4">
             <a
               href="https://tokipona.org"
               className="text-blue-600 hover:text-blue-800 underline"
@@ -66,8 +66,8 @@ const AboutPage: React.FC = () => {
               Toki Pona: The Language of Good
             </a>
             .
-          </p>
-          <p className="mb-4">
+          </div>
+          <div className="mb-4">
             If you are interested in helping with this site, especially
             contributing or editing stories, please contact
             <a
@@ -77,8 +77,8 @@ const AboutPage: React.FC = () => {
               jan.kolin@akesi.site
             </a>
             .
-          </p>
-          <p className="mb-4">
+          </div>
+          <div className="mb-4">
             <strong>Keyboard Shortcuts:</strong>
             <ul className="list-disc list-inside">
               <li><strong>\</strong> - Toggle between Latin and sitelen pona</li>
@@ -86,7 +86,7 @@ const AboutPage: React.FC = () => {
               <li><strong>[</strong> and <strong>]</strong> - Cycle through fonts</li>
               <li><strong>?</strong> - Toggle hints</li>
             </ul>
-          </p>
+          </div>
         </div>
       </div>
       <div className="mt-12">

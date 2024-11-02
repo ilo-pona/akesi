@@ -9,14 +9,14 @@ import { useStories } from "../contexts/StoriesContext";
 
 const STORIES_PER_PAGE = 6;
 const PAGES_TO_FETCH = 3;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+// const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 const HomePage: React.FC = () => {
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
-  const [askedFor, setAskedFor] = useState(-10);
   const [stories, setStories] = useState<Story[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasOlderStories, setHasOlderStories] = useState(true);
   const [hasNewerStories, setHasNewerStories] = useState(false);
@@ -36,13 +36,17 @@ const HomePage: React.FC = () => {
     }
   }, [location]);
 
-  const fetchStories = useCallback(async () => {
+  const fetchStories = useCallback(async (page: number) => {
+    if(loading) {
+      return;
+    }
     try {
-      setLoading(true);
-      const skip = (currentPage - 1) * STORIES_PER_PAGE;
+      if (!cachedStories) { // only show loading spinner if there are no cached stories
+        setLoading(true);
+      }
+      const skip = (page - 1) * STORIES_PER_PAGE;
       const limit = STORIES_PER_PAGE * PAGES_TO_FETCH + 1;
-      console.log("fetching", skip, limit, cachedStories?.data.length);
-      setAskedFor(limit + cachedStories?.data.length);
+      console.log("fetching stories", skip, limit, skip+limit, "for page", page);
       const response = await fetch(
         `${config.apiBaseUrl}/stories?skip=${skip}&limit=${limit}`
       );
@@ -50,6 +54,10 @@ const HomePage: React.FC = () => {
         throw new Error("Failed to fetch stories");
       }
       const data = await response.json();
+      console.log("fetched stories", data.length,"expected", limit);
+      if (data.length < limit) {
+        setFinished(true);
+      }
 
       // Process image URLs using the configurable image prefix
       const processedData = data.map((story: Story) => ({
@@ -59,7 +67,15 @@ const HomePage: React.FC = () => {
           : `${config.imagePrefix}${story.imageUrl}`,
       }));
 
-      setStories(processedData); // Don't accumulate, just set the new batch
+      setStories((prevStories) => {
+        const allStories = [...prevStories, ...processedData];
+        // Remove duplicates based on story ID
+        const uniqueStories = Array.from(
+          new Map(allStories.map((story) => [story.id, story])).values()
+        );
+        return uniqueStories;
+      });
+
       setCachedStories((prevCache) => {
         const existingStories = prevCache?.data || [];
         const allStories = [...existingStories, ...processedData];
@@ -73,41 +89,38 @@ const HomePage: React.FC = () => {
         };
       });
 
-      const newHasOlderStories =
-        data.length > STORIES_PER_PAGE * PAGES_TO_FETCH;
-      const newHasNewerStories = currentPage > 1;
-      setHasOlderStories(newHasOlderStories);
-      setHasNewerStories(newHasNewerStories);
+      setHasOlderStories(data.length > STORIES_PER_PAGE * PAGES_TO_FETCH);
+      setHasNewerStories(page > 1);
       setLoading(false);
     } catch (err) {
       setError("Error fetching stories. Please try again later.");
       setLoading(false);
     }
-  }, [currentPage, setCachedStories]);
+  }, [setCachedStories]);
 
   useEffect(() => {
     const currentTime = Date.now();
     const shouldFetchNewStories =
+      !finished && (
       !cachedStories ||
       cachedStories.data.length === 0 ||
-      currentTime - cachedStories.timestamp >= CACHE_DURATION ||
-      cachedStories.data.length < currentPage * STORIES_PER_PAGE;
-    console.log(
-      cachedStories?.data.length,
-      currentPage * STORIES_PER_PAGE,
-      shouldFetchNewStories,
-      askedFor
-    );
-    const datalen = cachedStories?.data.length || 0;
-    if (shouldFetchNewStories && askedFor <= datalen) {
-      fetchStories();
+      // currentTime - cachedStories.timestamp >= CACHE_DURATION ||
+      cachedStories.data.length < currentPage * STORIES_PER_PAGE);
+    console.log("useEffect", shouldFetchNewStories, cachedStories?.data.length || 0, "page", currentPage, currentPage*STORIES_PER_PAGE);
+    if (shouldFetchNewStories) {
+      fetchStories(currentPage);
     } else {
-      setStories(cachedStories.data);
+      setStories(cachedStories?.data);
       setHasOlderStories(
-        cachedStories.data.length >= currentPage * STORIES_PER_PAGE
+        (cachedStories?.data.length || 0) >= currentPage * STORIES_PER_PAGE
       );
       setHasNewerStories(currentPage > 1);
       setLoading(false);
+    }
+
+    // Prefetch stories for the next page
+    if (shouldFetchNewStories && currentPage < (cachedStories?.data.length || 0) / STORIES_PER_PAGE) {
+      fetchStories(currentPage + 1);
     }
   }, [currentPage, fetchStories, cachedStories]);
 

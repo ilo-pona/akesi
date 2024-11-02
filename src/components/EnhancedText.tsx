@@ -169,7 +169,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     tokens: TokenizedText[],
     isEnglish: boolean
   ) => {
-    // return <em>COLIN</em>;
     const result = [];
     var i = 0;
     while (tokens.length > 0) {
@@ -182,7 +181,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
           var imgAttributes = parseAttributes(token.content);
           result.push(
             <img key={`image-${i}`} {...imgAttributes} />
-            // src={token.content} alt="inline image" />
           );
         }
         switch (token.content) {
@@ -233,6 +231,44 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
             result.push(
               <img key={`image-${i}`} src={token.content} alt="inline image" />
             );
+            break;
+          case "table":
+            result.push(
+              <table key={`table-${i}`} className="border-collapse border">
+                {processTokenizedText(tokens, isEnglish)}
+              </table>
+            );
+            break;
+          case "tr":
+            result.push(
+              <tr key={`tr-${i}`}>
+                {processTokenizedText(tokens, isEnglish)}
+              </tr>
+            );
+            break;
+          case "td":
+            result.push(
+              <td key={`td-${i}`} className="border p-2">
+                {processTokenizedText(tokens, isEnglish)}
+              </td>
+            );
+            break;
+          case "th":
+            result.push(
+              <th key={`th-${i}`} className="border p-2 font-bold">
+                {processTokenizedText(tokens, isEnglish)}
+              </th>
+            );
+            break;
+          default:
+            if (!token.content.startsWith("/")) {
+              const Tag = token.content;
+              result.push(
+                <Tag key={`generic-${i}`}>
+                  {processTokenizedText(tokens, isEnglish)}
+                </Tag>
+              );
+            }
             break;
         }
       }

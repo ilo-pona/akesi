@@ -18,6 +18,10 @@ import { getFontFamily } from "./config/fontConfig";
 import { convertToUCSUR } from "./utils/ucsurConverter";
 import { fontOptions, defaultAsciiFont, defaultUcsurFont } from "./config/fontConfig";
 
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {}
+}
+
 function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { settings, updateSettings } = useSettings();

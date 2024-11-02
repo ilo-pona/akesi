@@ -457,7 +457,8 @@ def split_fancy_names(string: str):
 
 def handle_markdown(content: str):
     content = content.replace("\n\n", "\nPARAGRAPH_BREAK")
-    markdown_text =  markdown.markdown(content).replace("<p>", "").replace("</p>", "")
+    markdown_text = markdown.markdown(content, extensions=['tables']).replace("<p>", "").replace("</p>", "")
+    markdown_text = re.sub(r'(<br */?>)', r'', markdown_text)
     if "<" not in markdown_text:
         return _preprocess(content)
     markdown_text = re.sub(r'(</h[1-3]>)\n', r'\1', markdown_text)
@@ -467,9 +468,13 @@ def handle_markdown(content: str):
     for t in markdown_tokens:
         if len(t) == 0:
             continue
-        m, c = t.split(">")
-        c = c.replace("PARAGRAPH_BREAK", "\n")
-        toks.append({"type": "markdown", "content": m})
+        try:
+            m, c = t.split(">")
+        except:
+            m = ""
+            c = t
+        if len(m) > 0:
+            toks.append({"type": "markdown", "content": m})
         toks+= _preprocess(c)
 
     return toks
@@ -479,6 +484,7 @@ def preprocess(content: str):
     return handle_markdown(content)
     
 def _preprocess(content: str):
+    content = content.replace("PARAGRAPH_BREAK", "\n")
     tokens = []
     token_type = "tokipona"
     output = ""
@@ -519,9 +525,7 @@ def _preprocess(content: str):
 
         # use regex. get the next word
         next_word = re.match(r"[\w]+", rest)
-        # print(i, c, rest, next_word)
         if next_word is not None:
-            # print(">" + next_word[-1] + ">")
             w = next_word[0]
             if w in UNORTHODOXIES:
                 w = UNORTHODOXIES[w]
@@ -541,7 +545,6 @@ def _preprocess(content: str):
                 else:
                     output += w
         else:
-            # print(c)
             output += c
             i += 1
 

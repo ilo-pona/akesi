@@ -8,6 +8,7 @@ from typing import List
 import os
 import uuid
 from ilo import preprocess
+from importing import import_story
 
 app = FastAPI()
 
@@ -73,8 +74,6 @@ class Story(BaseModel):
 
 
 app.get("/")
-
-
 async def root():
     return {"message": "See /stories for all stories"}
 
@@ -82,7 +81,7 @@ async def root():
 @app.get("/stories", response_model=List[Story])
 async def get_stories(
     skip: int = Query(0, ge=0, description="Number of stories to skip"),
-    limit: int = Query(10, ge=1, le=100, description="Number of stories to return"),
+    limit: int = Query(100, ge=1, le=100, description="Number of stories to return"),
 ):
     stories = await stories_collection.find().skip(skip).limit(limit).to_list(limit)
     return [
@@ -116,8 +115,10 @@ async def tokenise_story(story: Story):
 @app.post("/stories", response_model=Story)
 async def create_story(story: Story):
     story_dict = story.dict(exclude={"id"})
-    new_story = await stories_collection.insert_one(story_dict)
-    created_story = await stories_collection.find_one({"_id": new_story.inserted_id})
+    created_story = await import_story([story_dict], stories_collection, summarize=True), 
+
+    # new_story = await stories_collection.insert_one(story_dict)
+    # created_story = await stories_collection.find_one({"_id": new_story.inserted_id})
     return Story(
         id=str(created_story["_id"]),
         **{k: v for k, v in created_story.items() if k != "_id"},
