@@ -33,19 +33,27 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
   const renderText = useTextRenderer();
 
   const handleWordInteraction = useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
+    (event: React.MouseEvent<HTMLSpanElement> | React.TouchEvent<HTMLSpanElement>) => {
       if (!settings.showHints) return;
 
-      const range = document.caretPositionFromPoint(
-        event.clientX,
-        event.clientY
-      );
-      if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
-        const text = range.offsetNode.textContent || "";
-        const word = getWordAtPoint(text, range.offset);
+      let clientX, clientY;
+      if (event.type.startsWith("touch")) {
+        const touchEvent = event as React.TouchEvent<HTMLSpanElement>;
+        clientX = touchEvent.touches[0].clientX;
+        clientY = touchEvent.touches[0].clientY;
+      } else {
+        const mouseEvent = event as React.MouseEvent<HTMLSpanElement>;
+        clientX = mouseEvent.clientX;
+        clientY = mouseEvent.clientY;
+      }
+
+      const range = document.caretRangeFromPoint(clientX, clientY);
+      if (range && range.startContainer.nodeType === Node.TEXT_NODE) {
+        const text = range.startContainer.textContent || "";
+        const word = getWordAtPoint(text, range.startOffset);
         if (word) {
           setSelectedWord(word);
-          setHintPosition({ x: event.clientX, y: event.clientY });
+          setHintPosition({ x: clientX, y: clientY });
         } else {
           setSelectedWord(null);
           setHintPosition(null);
@@ -341,6 +349,9 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
       onClick={handleWordInteraction}
       onMouseMove={handleWordInteraction}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleWordInteraction}
+      onTouchMove={handleWordInteraction}
+      onTouchEnd={handleMouseLeave}
     >
       {processedTextParts}
       {settings.showHints && selectedWord && hintPosition && (
