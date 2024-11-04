@@ -37,19 +37,16 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     let text = "";
     if (document.caretPositionFromPoint) {
       range = document.caretPositionFromPoint(x, y);
+      if (range ) {
+        text = range.offsetNode.textContent || "";
+      }
     } else {
       range = document.caretRangeFromPoint(x, y);
       if(range) {
         text = range.startContainer.textContent || "";
       }
     }
-
-    if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
-      text = range.offsetNode.textContent || "";
-    } else {
-      return null;
-    }
-    const offset = range?.offset;
+    const offset: number = range?.offset || range.endOffset;;
     const beforePoint = text.slice(0, offset);
     const afterPoint = text.slice(offset);
     const wordBefore = beforePoint.match(/\S+$/);
@@ -67,10 +64,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
     (event: React.MouseEvent<HTMLSpanElement>) => {
       if (!settings.showHints) return;
 
-      const range = document.caretPositionFromPoint(
-        event.clientX,
-        event.clientY
-      );
       const word = getWordFromXY(event.clientX, event.clientY);
         if (word) {
           setSelectedWord(word);
