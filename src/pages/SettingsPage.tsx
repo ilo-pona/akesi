@@ -27,7 +27,6 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
 
   const handleRenderChange = () => {
     const newRender = settings.render === 'latin' ? 'sitelen_pona' : 'latin';
-    console.log('Updating render to:', newRender);
     if (newRender === 'sitelen_pona') {
       const newFont = settings.useUCSUR ? defaultUcsurFont : defaultAsciiFont;
       updateSettings({ render: newRender, sitelenPonaFont: newFont });

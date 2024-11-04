@@ -66,7 +66,6 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 
       const word = getWordFromXY(event.clientX, event.clientY);
         if (word) {
-          console.log(unorthodoxies.has(word), word);
           if (unorthodoxies.has(word)) { 
             setSelectedWord(unorthodoxies.get(word));
           } else {
