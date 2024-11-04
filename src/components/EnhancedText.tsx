@@ -32,35 +32,24 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
   const { settings } = useSettings();
   const renderText = useTextRenderer();
 
-  const handleWordInteraction = useCallback(
-    (event: React.MouseEvent<HTMLSpanElement>) => {
-      if (!settings.showHints) return;
-
-      const range = document.caretPositionFromPoint(
-        event.clientX,
-        event.clientY
-      );
-      if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
-        const text = range.offsetNode.textContent || "";
-        const word = getWordAtPoint(text, range.offset);
-        if (word) {
-          setSelectedWord(word);
-          setHintPosition({ x: event.clientX, y: event.clientY });
-        } else {
-          setSelectedWord(null);
-          setHintPosition(null);
-        }
+  const getWordFromXY = (x: number, y: number) => {
+    let range;
+    let text = "";
+    if (document.caretPositionFromPoint) {
+      range = document.caretPositionFromPoint(x, y);
+    } else {
+      range = document.caretRangeFromPoint(x, y);
+      if(range) {
+        text = range.startContainer.textContent || "";
       }
-    },
-    [settings.showHints]
-  );
+    }
 
-  const handleMouseLeave = useCallback(() => {
-    setSelectedWord(null);
-    setHintPosition(null);
-  }, []);
-
-  const getWordAtPoint = (text: string, offset: number): string | null => {
+    if (range && range.offsetNode.nodeType === Node.TEXT_NODE) {
+      text = range.offsetNode.textContent || "";
+    } else {
+      return null;
+    }
+    const offset = range?.offset;
     const beforePoint = text.slice(0, offset);
     const afterPoint = text.slice(offset);
     const wordBefore = beforePoint.match(/\S+$/);
@@ -72,7 +61,32 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
       );
     }
     return null;
-  };
+  }
+
+  const handleWordInteraction = useCallback(
+    (event: React.MouseEvent<HTMLSpanElement>) => {
+      if (!settings.showHints) return;
+
+      const range = document.caretPositionFromPoint(
+        event.clientX,
+        event.clientY
+      );
+      const word = getWordFromXY(event.clientX, event.clientY);
+        if (word) {
+          setSelectedWord(word);
+          setHintPosition({ x: event.clientX, y: event.clientY });
+        } else {
+          setSelectedWord(null);
+          setHintPosition(null);
+        }
+    },
+    [settings.showHints]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setSelectedWord(null);
+    setHintPosition(null);
+  }, []);
 
   const processText = (text: string | TokenizedText[], isEnglish: boolean) => {
     if (typeof text === "string") {
