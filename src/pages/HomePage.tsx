@@ -144,7 +144,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="text-size-base">
       <h1 className="text-3xl font-bold mb-8">
         <EnhancedText text="sona sin pi toki pona" isEnglish={false} />
       </h1>

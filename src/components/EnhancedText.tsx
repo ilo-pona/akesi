@@ -348,6 +348,7 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 
   return (
     <div
+      className={`${(!isEnglish && settings.render !== "latin") ? "sitelen-pona" : "text-size-base"}`}
       style={{
         fontFamily: currentFont,
         whiteSpace: removeExtraSpace ? "normal" : "pre-wrap",

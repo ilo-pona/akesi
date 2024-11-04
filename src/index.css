@@ -31,3 +31,13 @@
   cursor: pointer;
   /* text-decoration: underline; */
 }
+
+.text-size-base {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem;
+}
+
+.sitelen-pona {
+  font-size: 1.75rem; /* 28px */
+  line-height: 2.25rem;
+}
