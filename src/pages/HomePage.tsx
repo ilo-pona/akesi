@@ -44,9 +44,9 @@ const HomePage: React.FC = () => {
       if (!cachedStories) { // only show loading spinner if there are no cached stories
         setLoading(true);
       }
-      const skip = (page - 1) * STORIES_PER_PAGE;
+      const skip = (cachedStories?.data.length || 0);
       const limit = STORIES_PER_PAGE * PAGES_TO_FETCH + 1;
-      console.log("fetching stories", skip, limit, skip+limit, "for page", page);
+      console.log("fetching stories: skip", skip, limit, skip+limit, "for page", page);
       const response = await fetch(
         `${config.apiBaseUrl}/stories?skip=${skip}&limit=${limit}`
       );
@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
         throw new Error("Failed to fetch stories");
       }
       const data = await response.json();
-      console.log("fetched stories", data.length,"expected", limit);
+      console.log("fetched ", data.length,"stories, expected:", limit);
       if (data.length < limit) {
         setFinished(true);
       }
@@ -96,7 +96,7 @@ const HomePage: React.FC = () => {
       setError("Error fetching stories. Please try again later.");
       setLoading(false);
     }
-  }, [setCachedStories]);
+  }, [loading, setCachedStories, cachedStories]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
       cachedStories.data.length === 0 ||
       // currentTime - cachedStories.timestamp >= CACHE_DURATION ||
       cachedStories.data.length < currentPage * STORIES_PER_PAGE);
-    console.log("useEffect", shouldFetchNewStories, cachedStories?.data.length || 0, "page", currentPage, currentPage*STORIES_PER_PAGE);
+    console.log("useEffect. Do we need new?", shouldFetchNewStories, "we have", cachedStories?.data.length || 0, currentPage * STORIES_PER_PAGE, "needed; page", currentPage, currentPage*STORIES_PER_PAGE);
     if (shouldFetchNewStories) {
       fetchStories(currentPage);
     } else {

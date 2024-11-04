@@ -112,7 +112,10 @@ async def get_stories(
     skip: int = Query(0, ge=0, description="Number of stories to skip"),
     limit: int = Query(100, ge=1, le=100, description="Number of stories to return"),
 ):
-    stories = await stories_collection.find().sort("date", -1).skip(skip).limit(limit).to_list(limit)
+    stories = await stories_collection.find().sort([
+        ("date", -1),
+        ("_id", -1)  # Secondary sort by _id ensures consistent ordering
+    ]).skip(skip).limit(limit).to_list(limit)
     return [
         Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"})
         for story in stories
