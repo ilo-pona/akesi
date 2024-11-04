@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useSettings } from "../contexts/SettingsContext";
 import WordHint from "./WordHint";
 import { useTextRenderer } from "../hooks/useTextRenderer";
-import { tokiPonaDictionary } from "../data/tokiPonaDictionary";
+import { tokiPonaDictionary, unorthodoxies } from "../data/tokiPonaDictionary";
 import { TokenizedText } from "../types/TokenizedText";
 import marked from "marked";
 
@@ -66,7 +66,12 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 
       const word = getWordFromXY(event.clientX, event.clientY);
         if (word) {
-          setSelectedWord(word);
+          console.log(unorthodoxies.has(word), word);
+          if (unorthodoxies.has(word)) { 
+            setSelectedWord(unorthodoxies.get(word));
+          } else {
+            setSelectedWord(word);
+          }
           setHintPosition({ x: event.clientX, y: event.clientY });
         } else {
           setSelectedWord(null);
@@ -362,6 +367,9 @@ export const EnhancedText: React.FC<EnhancedTextProps> = ({
 function isLegalTokiPonaWord(word: string): boolean {
   // Convert the word to lowercase for case-insensitive comparison
   const lowercaseWord = word.toLowerCase();
+  if (unorthodoxies.has(lowercaseWord)) {
+    return true;
+  }
 
   // Check if the word exists in the tokiPonaDictionary
   return tokiPonaDictionary.some((entry) => entry.word === lowercaseWord);

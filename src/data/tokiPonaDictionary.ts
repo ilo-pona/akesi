@@ -5,17 +5,9 @@ export interface TokiPonaWord {
   definition: string;
 }
 
-export interface UnorthodoxWord {
-  word: string;
-  original: string;
-}
-
-export const unorthodoxies: UnorthodoxWord[] = [
-  {
-    word: "ali",
-    original: "ale",
-  },
-];
+export const unorthodoxies: Map<string, string> = new Map([
+  [ "ali", "ale" ],
+]);
 
 export const tokiPonaDictionary: TokiPonaWord[] = [
   {
