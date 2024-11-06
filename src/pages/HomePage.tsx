@@ -29,7 +29,10 @@ const HomePage: React.FC = () => {
   const [retryAttempts, setRetryAttempts] = useState(0);
   const [lastErrorTime, setLastErrorTime] = useState(0);
 
-  const instance = window.location.hostname.split('.')[0];
+  var instance = window.location.hostname.split('.')[0];
+  if(instance === "akesi") {
+    instance = "default";
+  }
   console.log("instance", instance);
 
   useEffect(() => {
