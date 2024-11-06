@@ -29,9 +29,8 @@ const HomePage: React.FC = () => {
   const [retryAttempts, setRetryAttempts] = useState(0);
   const [lastErrorTime, setLastErrorTime] = useState(0);
 
-  // const instance = window.location.hostname.split('.')[0];
-  const instance = "kolin";
-  // const instance = "default";
+  const instance = window.location.hostname.split('.')[0];
+  console.log("instance", instance);
 
   useEffect(() => {
     const pageNumber = page ? parseInt(page, 10) : 1;
