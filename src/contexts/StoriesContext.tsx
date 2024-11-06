@@ -1,18 +1,27 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Story } from '../types/Story';
 
-interface StoriesContextType {
-  stories: { data: Story[]; timestamp: number } | null;
-  setStories: React.Dispatch<React.SetStateAction<{ data: Story[]; timestamp: number } | null>>;
+interface CachedStories {
+  data: Story[];
+  timestamp: number;
 }
 
-const StoriesContext = createContext<StoriesContextType | undefined>(undefined);
+interface StoriesContextType {
+  stories: CachedStories | null;
+  setStories: React.Dispatch<React.SetStateAction<CachedStories | null>>;
+  instance: string;
+}
 
-export const StoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [stories, setStories] = useState<{ data: Story[]; timestamp: number } | null>(null);
+export const StoriesContext = createContext<StoriesContextType | undefined>(undefined);
+
+export const StoriesProvider: React.FC<{ children: React.ReactNode; instance: string }> = ({ 
+  children, 
+  instance 
+}) => {
+  const [stories, setStories] = useState<CachedStories | null>(null);
 
   return (
-    <StoriesContext.Provider value={{ stories, setStories }}>
+    <StoriesContext.Provider value={{ stories, setStories, instance }}>
       {children}
     </StoriesContext.Provider>
   );

@@ -27,7 +27,6 @@ app.add_middleware(
 # MongoDB connection
 client = AsyncIOMotorClient(os.getenv("MONGO_URI", "mongodb://localhost:27019"))
 db = client.stories
-stories_collection = db.stories
 
 # Add these constants at the top of the file, after the imports
 IMAGE_UPLOAD_DIR = os.getenv("IMAGE_UPLOAD_DIR", "./images")
@@ -49,6 +48,14 @@ async def verify_jwt(credentials: HTTPAuthorizationCredentials = Depends(securit
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
+def get_collection(instance: str = "default"):
+    if instance == "default" or instance == "localhost":
+        return db["stories"]  # Use original collection for default instance
+    
+    # For other instances, use instance-specific collections
+    safe_instance = "".join(c for c in instance if c.isalnum() or c in ('-', '_')).lower()
+    return db[f"{safe_instance}"]
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -111,10 +118,12 @@ async def root():
 async def get_stories(
     skip: int = Query(0, ge=0, description="Number of stories to skip"),
     limit: int = Query(100, ge=1, le=100, description="Number of stories to return"),
+    instance: str = Query("default", description="Instance identifier"),
 ):
-    stories = await stories_collection.find().sort([
+    collection = get_collection(instance)
+    stories = await collection.find().sort([
         ("date", -1),
-        ("_id", -1)  # Secondary sort by _id ensures consistent ordering
+        ("_id", -1)
     ]).skip(skip).limit(limit).to_list(limit)
     return [
         Story(id=str(story["_id"]), **{k: v for k, v in story.items() if k != "_id"})
@@ -150,8 +159,10 @@ async def create_story(
     token_payload: dict = Depends(verify_jwt) 
 ):
     story_dict = story.model_dump(exclude={"id"})
-    created_story = await import_story([story_dict], stories_collection, summarize=True)
-    print("CREATED: ", str(created_story['_id']))
+    instance_name = token_payload.get("instance", "stories")
+    stories_collection= get_collection(instance = instance_name)
+    created_story = await import_story([story_dict], summarize=True)
+    print(f"{instance_name}: CREATED  ", str(created_story['_id']))
     return Story(
         id=str(created_story["_id"]),
         **{k: v for k, v in created_story.items() if k != "_id"},
@@ -182,7 +193,10 @@ async def delete_story(story_id: str):
 
 
 @app.put("/images", response_model=dict)
-async def upload_image(file: UploadFile = File(...)):
+async def upload_image(
+    file: UploadFile = File(...),
+    token_payload: dict = Depends(verify_jwt)  
+):
     file_extension = os.path.splitext(file.filename)[1]
     new_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = os.path.join(IMAGE_UPLOAD_DIR, new_filename)
@@ -202,7 +216,7 @@ async def get_image(image_id: str):
 
 
 
-def generate_token(user_id: str, days_to_expire: int = 30) -> str:
+def generate_token(user_id: str, days_to_expire: int = 30, instance="/") -> str:
     """
     Generate a JWT token with an expiry date
     
@@ -217,6 +231,7 @@ def generate_token(user_id: str, days_to_expire: int = 30) -> str:
     
     payload = {
         'user_id': user_id,
+        "instance": instance,
         'exp': expiration,
         'iat': datetime.now(UTC)  # issued at
     }

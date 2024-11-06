@@ -23,9 +23,29 @@ if (process.env.NODE_ENV === 'production') {
   console.log = () => {}
 }
 
+function getInstanceFromUrl(): string {
+  const hostname = window.location.hostname;
+  const pathname = window.location.pathname;
+  
+  // Check for subdomain
+  const subdomain = hostname.split('.')[0];
+  if (subdomain !== 'akesi' && subdomain !== 'www') {
+    return subdomain;
+  }
+  
+  // Check for path-based instance
+  const pathParts = pathname.split('/');
+  if (pathParts.length > 1 && pathParts[1]) {
+    return pathParts[1];
+  }
+  
+  return 'default';
+}
+
 function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { settings, updateSettings } = useSettings();
+  const [instance] = useState(getInstanceFromUrl());
 
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
@@ -135,7 +155,7 @@ function AppContent() {
 function App() {
   return (
     <SettingsProvider>
-      <StoriesProvider>
+      <StoriesProvider instance={getInstanceFromUrl()}>
         <AppContent />
       </StoriesProvider>
     </SettingsProvider>

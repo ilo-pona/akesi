@@ -61,14 +61,18 @@ def import_stories(stories_data, db, delete=False, summarize=False):
 
     # print(f"Imported {len(stories_data)} stories into the database.")
 
-def import_file(file_path, delete=False, summarize=False):
+def import_file(file_path, delete=False, summarize=False, instance="stories"):
     db = MongoClient(os.getenv("MONGO_URI"))["stories"]
     with open(file_path, "r", encoding="utf-8") as file:
         stories_data = json.load(file)
-    import_stories(stories_data, db.stories, delete=delete, summarize=summarize)
+    import_stories(stories_data, db[instance], delete=delete, summarize=summarize)
 
 if __name__ == "__main__":
     delete = False
+    if "-i" in sys.argv:
+        instance = sys.argv[sys.argv.index("-i") + 1]
+        sys.argv.remove("-i")
+        sys.argv.remove(instance)
     if "-d" in sys.argv:
         delete = True
         sys.argv.remove("-d")
@@ -78,4 +82,4 @@ if __name__ == "__main__":
         sys.argv.remove("-s")
     if len(sys.argv) > 1:
         input_file = sys.argv[1]
-        import_file(input_file, delete=delete, summarize=summarize)
+        import_file(input_file, delete=delete, summarize=summarize, instance=instance)
